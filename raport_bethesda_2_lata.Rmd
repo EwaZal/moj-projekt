@@ -1,0 +1,231 @@
+---
+title: "Bethesda IV"
+author: "Piotr Wiśniewski, Gosia Struk-Panfil, Ewa Zalewska"
+date: "2025-04-16"
+output: html_document
+---
+
+```{r, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r setup, include=FALSE}
+
+library(readxl)
+library(rmarkdown)
+library(knitr)
+library(magrittr)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(Hmisc)
+library(readr)
+library(leaps)
+library(rstatix)
+library(broom)
+library(lsmeans)
+library("mvtnorm")
+library("emmeans")
+library(tidyverse)
+library(psych)
+library(lavaan)
+library(ggpubr)
+library(lubridate)
+library(mice)
+
+
+bethIV <- read_delim("beth4_EZ_v2.csv", delim = ";", 
+    escape_double = FALSE,locale = locale(decimal_mark = ","), trim_ws = TRUE)
+
+# Usunięcie wierszy z brakami danych (więcej niż 11 braków w danych)
+bethIV <- bethIV %>%
+  filter(rowSums(is.na(.)) <= 11)
+
+# Formatowanie wartości w kolumnach
+bethIV$data_wyjsciowa <- as.Date(bethIV$data_wyjsciowa, format = "%Y-%m-%d")
+bethIV$data_koncowa <- as.Date(bethIV$data_koncowa, format = "%Y-%m-%d")
+bethIV$data_urodzenia <- as.Date(bethIV$data_urodzenia, format = "%Y-%m-%d")
+bethIV$data_operacji <- as.Date(bethIV$data_operacji, format = "%Y-%m-%d")
+bethIV$wym1 <- as.numeric(bethIV$wym1)
+bethIV$wym2 <- as.numeric(bethIV$wym2)
+bethIV$wym3 <- as.numeric(bethIV$wym3)
+bethIV$wym4 <- as.numeric(bethIV$wym4)
+bethIV$wym5 <- as.numeric(bethIV$wym5)
+bethIV$wym6 <- as.numeric(bethIV$wym6)
+
+# Dodanie kolumny z wiekiem pacjentów w momencie koncowego badania USG
+bethIV <- bethIV %>%
+  mutate(
+    wiek = time_length(interval(data_urodzenia, data_koncowa), unit = "years")
+  )
+
+# Dodanie kolumny z różnicą w dniach używając mutate
+bethIV <- bethIV %>%
+  mutate(
+    roznica = time_length(interval(data_wyjsciowa, data_koncowa), unit = "years")
+  )
+
+bethIV %>%
+  get_summary_stats(roznica, type = "common")
+
+# Usunięcie wszystkich wartości, które mają różnicę między pierwszą a drugą obserwacją mniejszą niż dwa lata
+bethIV_2_lata <- bethIV %>%
+  filter(roznica >= 2)
+
+bethIV_2_lata %>%
+  get_summary_stats(roznica, type = "common")
+
+# Uszereguj wartosci w kolumnach od najwieszej do najmniejszej:
+bethIV_2_lata <- mutate(bethIV_2_lata, wymA = pmax(bethIV_2_lata$wym1, bethIV_2_lata$wym2, bethIV_2_lata$wym3))
+bethIV_2_lata <- mutate(bethIV_2_lata, wymB = apply(bethIV_2_lata[, c("wym1", "wym2", "wym3")], 1, function(x) sort(x)[2]))
+bethIV_2_lata <- mutate(bethIV_2_lata, wymC = pmin(bethIV_2_lata$wym1, bethIV_2_lata$wym2, bethIV_2_lata$wym3))
+
+bethIV_2_lata <- mutate(bethIV_2_lata, wymD = pmax(bethIV_2_lata$wym4, bethIV_2_lata$wym5, bethIV_2_lata$wym6))
+bethIV_2_lata <- mutate(bethIV_2_lata, wymE = apply(bethIV_2_lata[, c("wym4", "wym5", "wym6")], 1, function(x) sort(x)[2]))
+bethIV_2_lata <- mutate(bethIV_2_lata, wymF = pmin(bethIV_2_lata$wym4, bethIV_2_lata$wym5, bethIV_2_lata$wym6))
+
+
+# MICE algorithm imputation
+kolumny_do_imputacji <- c("wymA", "wymB", "wymC", "wymD", "wymE", "wymF")
+dane_subset <- bethIV_2_lata[, kolumny_do_imputacji]
+
+imputacja <- mice(dane_subset, m = 5, method = 'pmm', seed = 123)
+
+dane_imputowane <- complete(imputacja, 1)
+
+bethIV_2_lata[, kolumny_do_imputacji] <- dane_imputowane
+
+summary(bethIV_2_lata)
+
+```
+
+## Rozkład zmiennych: wieku, czasu obserwacji i wymiaru guzków:
+### wymiary od A do C - wymiary na początku obserwacji (od największego wymiaru - A do najmniejszego - C)
+### wymiary od D do F - wymiary na koniec obserwacji - (od największego wymiaru - D do najmniejszego - F)
+``` {r echo = FALSE, fig1, fig.height = 3, fig.width = 3}
+
+#testy shapiro-wilka
+shapiro.test(bethIV_2_lata$wiek)
+qqnorm(bethIV_2_lata$wiek)
+shapiro.test(bethIV_2_lata$roznica)
+qqnorm(bethIV_2_lata$roznica)
+shapiro.test(bethIV_2_lata$wymA)
+qqnorm(bethIV_2_lata$wymA)
+shapiro.test(bethIV_2_lata$wymB)
+qqnorm(bethIV_2_lata$wymB)
+shapiro.test(bethIV_2_lata$wymC)
+qqnorm(bethIV_2_lata$wymC)
+shapiro.test(bethIV_2_lata$wymD)
+qqnorm(bethIV_2_lata$wymD)
+shapiro.test(bethIV_2_lata$wymE)
+qqnorm(bethIV_2_lata$wymE)
+shapiro.test(bethIV_2_lata$wymF)
+qqnorm(bethIV_2_lata$wymF)
+```
+
+## Badanie ilosci kobiet i mężczyzn w grupie:
+
+``` {r echo=FALSE}
+
+bethIV_2_lata %>%
+  group_by(sex) %>%
+  count()
+``` 
+## Jaki procent stanowiły kobiet?
+``` {r echo = FALSE, fig2, fig.height = 1.5, fig.width = 1.8, warning=FALSE}
+
+bethIV_2_lata %>%
+  summarise(procent_kobiet = 100 * mean(sex == "K", na.rm = TRUE))
+``` 
+## Jaka była średnia wieku?
+``` {r echo=FALSE}
+bethIV_2_lata %>%
+  get_summary_stats(wiek, type = "common")
+```
+## Jaki był średni czas nadzoru pacjentów?
+``` {r echo=FALSE}
+bethIV_2_lata %>%
+  get_summary_stats(roznica, type = "common")
+```
+## Jaki był największy guzek na początku obserwacji?
+``` {r echo=FALSE}
+bethIV_2_lata %>%
+  get_summary_stats(wymA, type = "common")
+
+```
+## Jaki był największy guzek na koniec obserwacji?
+``` {r echo=FALSE}
+bethIV_2_lata %>%
+  get_summary_stats(wymD, type = "common")
+
+```
+## Jaki był najmniejszy guzek początku obserwacji?
+``` {r echo=FALSE}
+bethIV_2_lata %>%
+  get_summary_stats(wymC, type = "common")
+
+```
+## Jaki był najmniejszy guzek na koniec obserwacji?
+``` {r echo=FALSE}
+bethIV_2_lata %>%
+  get_summary_stats(wymF, type = "common")
+
+```
+## Jaka była mediana wielkości biorąc pod uwagę wszystkie guzki (na początku i końcu obserwacji)? 
+``` {r echo=FALSE}
+
+median(unlist(bethIV_2_lata[, c("wymA", "wymB", "wymC", "wymD", "wymE", "wymF")]), na.rm = TRUE)
+
+```
+## Jaka była mediana wielkości guzków na początku obserwacji?
+``` {r echo=FALSE}
+median(unlist(bethIV_2_lata[, c("wymA", "wymB", "wymC")]), na.rm = TRUE)
+
+```
+## Jaka była mediana wielkości guzków na końcu obserwacji?
+``` {r echo=FALSE}
+median(unlist(bethIV_2_lata[, c("wymD", "wymE", "wymF")]), na.rm = TRUE)
+
+```
+## Ile osób miało AITD?
+``` {r echo=FALSE}
+bethIV_2_lata %>%
+  group_by(AITD) %>%
+  count()
+```
+## Ile osób miało guzki oksyfilne?
+``` {r echo=FALSE}
+bethIV_2_lata %>%
+  group_by(onkocytarna) %>%
+  count()
+```
+## Ile osób miało progresję wielkości?
+``` {r echo=FALSE}
+bethIV_2_lata <- bethIV_2_lata %>%
+  mutate(
+    progresja = ifelse((wymD - wymA) > 2 & (wymB - wymE) > 2 | (wymD - wymA) > 2 & (wymC - wymF) > 2 | (wymC - wymF) > 2 & (wymB - wymE) > 2 | (wymD - wymA) > 2 & (wymB - wymE) > 2 & (wymC - wymF) > 2, 1, 0)
+  )
+
+bethIV_2_lata %>%
+  group_by(progresja) %>%
+  count()
+```
+## Ile osób z progresją była zweryfikowana jako mająca raka?
+``` {r echo=FALSE}
+bethIV_2_lata %>% 
+  group_by(progresja) %>%
+  count(hist_pat)
+```
+## Z jakimi cechami wiązało się występowanie progresji w modelu logistycznym?
+``` {r echo=FALSE}
+model <- glm(progresja ~ sex + wiek + onkocytarna + AITD, data = bethIV_2_lata, family = binomial)
+summary(model)
+# OR
+exp(coef(model))
+# przedziały ufności 95%:
+exp(confint(model))
+```
+
+
+
+
