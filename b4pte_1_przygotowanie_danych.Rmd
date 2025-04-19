@@ -1,7 +1,7 @@
 ---
 title: "Bethesda IV - Przygotowanie zbioru danych"
 author: "Piotr Wiśniewski, Gosia Struk-Panfil, Ewa Zalewska"
-date: "2025-04-16"
+date:  "`r format(Sys.time(), '%e %b %Y, godz. %H:%M')`"
 output: html_document
 ---
 
