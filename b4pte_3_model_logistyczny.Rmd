@@ -10,29 +10,6 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
 ```{r setup, include=FALSE}
-
-library(readxl)
-library(rmarkdown)
-library(knitr)
-library(magrittr)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
-library(Hmisc)
-library(readr)
-library(leaps)
-library(rstatix)
-library(broom)
-library(lsmeans)
-library("mvtnorm")
-library("emmeans")
-library(tidyverse)
-library(psych)
-library(lavaan)
-library(ggpubr)
-library(lubridate)
-library(mice)
-
 plik_dane_do_analizy <- "bethIV_2_lata.RDS"
  
 if (file.exists(plik_dane_do_analizy)) {
