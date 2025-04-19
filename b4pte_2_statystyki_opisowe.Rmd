@@ -11,27 +11,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r setup, include=FALSE}
 
-library(readxl)
-library(rmarkdown)
-library(knitr)
-library(magrittr)
-library(ggplot2)
-library(tidyr)
 library(dplyr)
-library(Hmisc)
-library(readr)
-library(leaps)
-library(rstatix)
-library(broom)
-library(lsmeans)
-library("mvtnorm")
-library("emmeans")
-library(tidyverse)
-library(psych)
-library(lavaan)
 library(ggpubr)
-library(lubridate)
-library(mice)
 
 plik_dane_do_analizy <- "bethIV_2_lata.RDS"
  
@@ -153,14 +134,5 @@ bethIV_2_lata %>%
 bethIV_2_lata %>% 
   group_by(progresja) %>%
   count(hist_pat)
-```
-## Z jakimi cechami wiązało się występowanie progresji w modelu logistycznym?
-``` {r echo=FALSE}
-model <- glm(progresja ~ sex + wiek + onkocytarna + AITD, data = bethIV_2_lata, family = binomial)
-summary(model)
-# OR
-exp(coef(model))
-# przedziały ufności 95%:
-exp(confint(model))
 ```
 
