@@ -47,18 +47,18 @@ bethIV <- bethIV %>%
 ## Dodanie kolumny z różnicą w dniach używając mutate
 bethIV <- bethIV %>%
   mutate(
-    roznica = time_length(interval(data_wyjsciowa, data_koncowa), unit = "years")
+    czas_nadzoru_lata = time_length(interval(data_wyjsciowa, data_koncowa), unit = "years")
   )
 
 bethIV %>%
-  get_summary_stats(roznica, type = "common")
+  get_summary_stats(czas_nadzoru_lata, type = "common")
 
 # Usunięcie wszystkich wartości, które mają różnicę między pierwszą a drugą obserwacją mniejszą niż dwa lata
 bethIV_2_lata <- bethIV %>%
-  filter(roznica >= 2)
+  filter(czas_nadzoru_lata >= 2)
 
 bethIV_2_lata %>%
-  get_summary_stats(roznica, type = "common")
+  get_summary_stats(czas_nadzoru_lata, type = "common")
 
 ```
 

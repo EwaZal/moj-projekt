@@ -31,8 +31,8 @@ if (file.exists(plik_dane_do_analizy)) {
 #testy shapiro-wilka
 shapiro.test(bethIV_2_lata$wiek)
 qqnorm(bethIV_2_lata$wiek)
-shapiro.test(bethIV_2_lata$roznica)
-qqnorm(bethIV_2_lata$roznica)
+shapiro.test(bethIV_2_lata$czas_nadzoru_lata)
+qqnorm(bethIV_2_lata$czas_nadzoru_lata)
 shapiro.test(bethIV_2_lata$wymA)
 qqnorm(bethIV_2_lata$wymA)
 shapiro.test(bethIV_2_lata$wymB)
@@ -69,7 +69,7 @@ bethIV_2_lata %>%
 ## Jaki był średni czas nadzoru pacjentów?
 ``` {r echo=FALSE}
 bethIV_2_lata %>%
-  get_summary_stats(roznica, type = "common")
+  get_summary_stats(czas_nadzoru_lata, type = "common")
 ```
 ## Jaki był największy guzek na początku obserwacji?
 ``` {r echo=FALSE}
