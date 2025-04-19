@@ -53,13 +53,13 @@ bethIV$wym4 <- as.numeric(bethIV$wym4)
 bethIV$wym5 <- as.numeric(bethIV$wym5)
 bethIV$wym6 <- as.numeric(bethIV$wym6)
 
-# Dodanie kolumny z wiekiem pacjentów w momencie koncowego badania USG
+## Dodanie kolumny z wiekiem pacjentów w momencie koncowego badania USG
 bethIV <- bethIV %>%
   mutate(
     wiek = time_length(interval(data_urodzenia, data_koncowa), unit = "years")
   )
 
-# Dodanie kolumny z różnicą w dniach używając mutate
+## Dodanie kolumny z różnicą w dniach używając mutate
 bethIV <- bethIV %>%
   mutate(
     roznica = time_length(interval(data_wyjsciowa, data_koncowa), unit = "years")
@@ -75,18 +75,11 @@ bethIV_2_lata <- bethIV %>%
 bethIV_2_lata %>%
   get_summary_stats(roznica, type = "common")
 
-# Uszereguj wartosci w kolumnach od najwieszej do najmniejszej:
-bethIV_2_lata <- mutate(bethIV_2_lata, wymA = pmax(bethIV_2_lata$wym1, bethIV_2_lata$wym2, bethIV_2_lata$wym3))
-bethIV_2_lata <- mutate(bethIV_2_lata, wymB = apply(bethIV_2_lata[, c("wym1", "wym2", "wym3")], 1, function(x) sort(x)[2]))
-bethIV_2_lata <- mutate(bethIV_2_lata, wymC = pmin(bethIV_2_lata$wym1, bethIV_2_lata$wym2, bethIV_2_lata$wym3))
+```
 
-bethIV_2_lata <- mutate(bethIV_2_lata, wymD = pmax(bethIV_2_lata$wym4, bethIV_2_lata$wym5, bethIV_2_lata$wym6))
-bethIV_2_lata <- mutate(bethIV_2_lata, wymE = apply(bethIV_2_lata[, c("wym4", "wym5", "wym6")], 1, function(x) sort(x)[2]))
-bethIV_2_lata <- mutate(bethIV_2_lata, wymF = pmin(bethIV_2_lata$wym4, bethIV_2_lata$wym5, bethIV_2_lata$wym6))
-
-
-# MICE algorithm imputation
-kolumny_do_imputacji <- c("wymA", "wymB", "wymC", "wymD", "wymE", "wymF")
+# algorytm MICE 
+``` {r echo=FALSE}
+kolumny_do_imputacji <- c("wym1", "wym2", "wym3", "wym4", "wym5", "wym6")
 dane_subset <- bethIV_2_lata[, kolumny_do_imputacji]
 
 imputacja <- mice(dane_subset, m = 5, method = 'pmm', seed = 123)
@@ -99,9 +92,32 @@ summary(bethIV_2_lata)
 
 ```
 
+
+
+## Uszereguj wartosci w kolumnach od najwieszej do najmniejszej:
+### A-C wymiary od największego do najmniejszgo na początku obserwacji:
+### D-F wymiary od największego do najmniejszego na koniec obserwacji:
+``` {r echo=FALSE}
+bethIV_2_lata <- mutate(bethIV_2_lata, wymA = pmax(bethIV_2_lata$wym1, bethIV_2_lata$wym2, bethIV_2_lata$wym3))
+bethIV_2_lata <- mutate(bethIV_2_lata, wymB = apply(bethIV_2_lata[, c("wym1", "wym2", "wym3")], 1, function(x) sort(x)[2]))
+bethIV_2_lata <- mutate(bethIV_2_lata, wymC = pmin(bethIV_2_lata$wym1, bethIV_2_lata$wym2, bethIV_2_lata$wym3))
+
+bethIV_2_lata <- mutate(bethIV_2_lata, wymD = pmax(bethIV_2_lata$wym4, bethIV_2_lata$wym5, bethIV_2_lata$wym6))
+bethIV_2_lata <- mutate(bethIV_2_lata, wymE = apply(bethIV_2_lata[, c("wym4", "wym5", "wym6")], 1, function(x) sort(x)[2]))
+bethIV_2_lata <- mutate(bethIV_2_lata, wymF = pmin(bethIV_2_lata$wym4, bethIV_2_lata$wym5, bethIV_2_lata$wym6))
+
+```
+
+
+``` {r echo=FALSE}
+bethIV_2_lata <- bethIV_2_lata %>% 
+  mutate(
+    sprawdzenie_szeregu = ifelse((wymB > wymA) | (wymC > wymB) | (wymC > wymA) | (wymE > wymD) | (wymF > wymE) | (wymF > wymD), 1, 0)
+  )
+
+```
+
 ## Rozkład zmiennych: wieku, czasu obserwacji i wymiaru guzków:
-### wymiary od A do C - wymiary na początku obserwacji (od największego wymiaru - A do najmniejszego - C)
-### wymiary od D do F - wymiary na koniec obserwacji - (od największego wymiaru - D do najmniejszego - F)
 ``` {r echo = FALSE, fig1, fig.height = 3, fig.width = 3}
 
 #testy shapiro-wilka
@@ -225,7 +241,4 @@ exp(coef(model))
 # przedziały ufności 95%:
 exp(confint(model))
 ```
-
-
-
 
