@@ -99,7 +99,16 @@ bethIV_2_lata <- bethIV_2_lata %>%
   mutate(
     sprawdzenie_szeregu = ifelse((wymB > wymA) | (wymC > wymB) | (wymC > wymA) | (wymE > wymD) | (wymF > wymE) | (wymF > wymD), 1, 0)
   )
+```
 
+# dodaj objętości guzków w bad. wyjściowym i bad. końcowym 
+
+```{r}
+bethIV_2_lata <- bethIV_2_lata %>%
+  mutate(
+    obj_1 = 0.001 * wymA * wymB * wymC * pi / 6,
+    obj_2 = 0.001 * wymD * wymE * wymF * pi / 6
+  )
 ```
 
 # Definicja progresji wielkości guzka
