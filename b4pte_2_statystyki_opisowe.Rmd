@@ -13,6 +13,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 library(dplyr)
 library(ggpubr)
+library(tidyr)
 
 plik_dane_do_analizy <- "bethIV_2_lata.RDS"
  
@@ -136,3 +137,43 @@ bethIV_2_lata %>%
   count(hist_pat)
 ```
 
+## Wykres indywidualnych zmian objętości guzków 
+
+```{r}
+wykr_zm_obj_dane_long <- bethIV_2_lata %>% 
+  select(pacjent_id, obj_1, obj_2) %>% 
+  pivot_longer(
+    cols = starts_with("obj_"),
+    names_to = "pomiar",
+    values_to = "objetosc"
+  ) %>%
+  mutate(
+    pomiar = factor(pomiar,
+     levels = c("obj_1", "obj_2"),
+     labels = c("początek", "koniec"))
+    ) %>%
+  mutate(
+    kierunek = if_else(objetosc[pomiar == "koniec"] >
+                             objetosc[pomiar == "początek"],
+                             "wzrost", "spadek"),
+    .by = pacjent_id)
+```
+
+### Skala y natywna
+
+```{r}
+wykr_zm_obj <- ggplot(wykr_zm_obj_dane_long, aes(x = pomiar, y = objetosc, color = kierunek, group = pacjent_id)) +
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  xlab("moment pomiaru") +
+  ylab("objętość guzka [ml]") +
+  theme_classic2()
+
+wykr_zm_obj
+```
+
+### Skala y logarytmiczna
+
+```{r}
+wykr_zm_obj + scale_y_log10()
+```
