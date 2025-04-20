@@ -107,7 +107,9 @@ bethIV_2_lata <- bethIV_2_lata %>%
 bethIV_2_lata <- bethIV_2_lata %>%
   mutate(
     obj_1 = 0.001 * wymA * wymB * wymC * pi / 6,
-    obj_2 = 0.001 * wymD * wymE * wymF * pi / 6
+    obj_2 = 0.001 * wymD * wymE * wymF * pi / 6,
+    obj_delta_ml = obj_2 - obj_1,
+    obj_delta_pct = 100 * (obj_2 - obj_1) / obj_1
   )
 ```
 
