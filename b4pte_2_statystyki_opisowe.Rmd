@@ -17,6 +17,8 @@ library(dplyr)
 library(ggpubr)
 library(tidyr)
 library(scales)
+library(rstatix)
+library(ggplot2)
 
 plik_dane_do_analizy <- "bethIV_2_lata.RDS"
  
@@ -37,6 +39,12 @@ theme_set(theme_classic2(base_size = 13))
 #testy shapiro-wilka
 shapiro.test(bethIV_2_lata$wiek)
 qqnorm(bethIV_2_lata$wiek)
+
+shapiro.test(bethIV_2_lata$wiek[bethIV_2_lata$progresja_vol50 == 1])
+qqnorm(bethIV_2_lata$wiek[bethIV_2_lata$progresja_vol50 == 1])
+shapiro.test(bethIV_2_lata$wiek[bethIV_2_lata$progresja_vol50 == 0])
+qqnorm(bethIV_2_lata$wiek[bethIV_2_lata$progresja_vol50 == 0])
+
 shapiro.test(bethIV_2_lata$czas_nadzoru_lata)
 qqnorm(bethIV_2_lata$czas_nadzoru_lata)
 shapiro.test(bethIV_2_lata$wymA)
@@ -321,4 +329,75 @@ ggplot(bethIV_2_lata, aes(x = obj_1, y = obj_delta_ml)) +
 ```{r}
 bethIV_2_lata %>% 
   count(progresja_vol50)
+```
+
+## Badanie ilosci kobiet i mężczyzn w grupie osób z progresją_vol50 i bez:
+
+``` {r}
+
+bethIV_2_lata %>%
+  group_by(progresja_vol50) %>%
+  count(sex)
+```
+
+## Badanie procentowej ilosci kobiet w grupie osób z progresją_vol50 i bez:
+``` {r}
+
+bethIV_2_lata %>%
+  group_by(progresja_vol50) %>%
+  summarise(procent_kobiet = 100 * mean(sex == "K", na.rm = TRUE))
+```
+## Badanie istotności różnicy w proporcji kobiet/mężczyzn w grupie osób z progresją_vol50 i bez:
+``` {r}
+mosaicplot(~ progresja_vol50 + sex, data = bethIV_2_lata, color = TRUE)
+
+pairwise_fisher_test(table(bethIV_2_lata$progresja_vol50, bethIV_2_lata$sex), p.adjust.method = "fdr")
+
+```
+## Badanie ilosci osób ze zmianą onkocytarną i nie w grupie osób z progresją_vol50 i bez:
+
+``` {r}
+
+bethIV_2_lata %>%
+  group_by(progresja_vol50) %>%
+  count(onkocytarna)
+```
+
+## Badanie istotności różnicy w proporcji kobiet/mężczyzn w grupie osób z progresją_vol50 i bez:
+``` {r}
+mosaicplot(~ progresja_vol50 + onkocytarna, data = bethIV_2_lata, color = TRUE)
+
+pairwise_fisher_test(table(bethIV_2_lata$progresja_vol50, bethIV_2_lata$onkocytarna), p.adjust.method = "fdr")
+
+```
+
+## Badanie ilosci osób z AITD w grupie osób z progresją_vol50 i bez:
+``` {r}
+
+bethIV_2_lata %>%
+  group_by(progresja_vol50) %>%
+  count(AITD)
+```
+
+## Badanie różnicy wieku w grupie osób z progresją_vol50 i bez:
+``` {r}
+bethIV_2_lata %>%
+  group_by(progresja_vol50) %>%
+  get_summary_stats(wiek)
+
+```
+
+## Badanie istotności różnicy wieku w grupie osób z progresją_vol50 i bez:
+``` {r}
+wilcox.test(wiek ~ progresja_vol50, data = subset(bethIV_2_lata, !is.na(progresja_vol50)))
+
+
+ggplot(data = bethIV_2_lata, aes(x = !is.na(progresja_vol50), y = wiek, fill = !is.na(progresja_vol50))) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("gray89", "gray27"))  +
+  scale_x_discrete(labels= c("bez progresji", "z progresją")) +
+  labs(x = "Kryterium progresji to wzrost objętości zmiany o > 50%", y = "Wiek [lata]") +
+  stat_compare_means(method = label = "p.format", size = 4) +
+  theme_bw() +
+  theme(legend.position = "none")
 ```
