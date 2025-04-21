@@ -27,7 +27,9 @@ jobs:
         with:
           r-version: release
 
-#      - uses: r-lib/actions/setup-renv@v2
+      - name: Install R packages
+        run: |
+          Rscript -e 'install.packages(c("rmarkdown", "knitr"))'
 
       - name: Render Rmarkdown files to HTML and Commit Results
         run: |
