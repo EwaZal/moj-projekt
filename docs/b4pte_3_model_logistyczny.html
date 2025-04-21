@@ -440,7 +440,7 @@ display: none;
 <h1 class="title toc-ignore">Bethesda IV - Model Logistyczny</h1>
 <h4 class="author">Piotr Wiśniewski, Gosia Struk-Panfil, Ewa
 Zalewska</h4>
-<h4 class="date">21 Apr 2025, godz. 19:11</h4>
+<h4 class="date">21 Apr 2025, godz. 22:12</h4>
 
 </div>
 
@@ -482,6 +482,308 @@ exp(confint(model))</code></pre>
 ## wiek        0.918943645  1.024648
 ## onkocytarna 0.027467489  3.216600
 ## AITD        0.175033562  6.052074</code></pre>
+</div>
+<div id="model-0" class="section level2">
+<h2>Model 0</h2>
+<pre class="r"><code>model0 &lt;- glm(progresja ~ 1, data = bethIV_2_lata, family = binomial)
+summary(model0)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = progresja ~ 1, family = binomial, data = bethIV_2_lata)
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -3.0681     0.3616  -8.484   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 65.455  on 179  degrees of freedom
+## Residual deviance: 65.455  on 179  degrees of freedom
+## AIC: 67.455
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>exp(coef(model0))</code></pre>
+<pre><code>## (Intercept) 
+##  0.04651163</code></pre>
+<pre class="r"><code>exp(confint(model0))</code></pre>
+<pre><code>##      2.5 %     97.5 % 
+## 0.02099122 0.08830588</code></pre>
+<pre class="r"><code>BIC(model0)</code></pre>
+<pre><code>## [1] 70.64826</code></pre>
+</div>
+<div id="model-1" class="section level2">
+<h2>Model 1</h2>
+<pre class="r"><code>model1 &lt;- glm(progresja ~ wiek , data = bethIV_2_lata, family = binomial)
+summary(model1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = progresja ~ wiek, family = binomial, data = bethIV_2_lata)
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -1.55814    1.32826  -1.173    0.241
+## wiek        -0.02906    0.02596  -1.120    0.263
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 65.455  on 179  degrees of freedom
+## Residual deviance: 64.125  on 178  degrees of freedom
+## AIC: 68.125
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>exp(coef(model1))</code></pre>
+<pre><code>## (Intercept)        wiek 
+##   0.2105272   0.9713579</code></pre>
+<pre class="r"><code>exp(confint(model1))</code></pre>
+<pre><code>##                  2.5 %   97.5 %
+## (Intercept) 0.01384133 2.749365
+## wiek        0.91955016 1.019866</code></pre>
+<pre class="r"><code>BIC(model0, model1)</code></pre>
+<pre><code>##        df      BIC
+## model0  1 70.64826
+## model1  2 74.51094</code></pre>
+</div>
+<div id="model-2" class="section level2">
+<h2>Model 2</h2>
+<pre class="r"><code>model2 &lt;- glm(progresja ~ wiek + sex , data = bethIV_2_lata, family = binomial)
+summary(model2)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = progresja ~ wiek + sex, family = binomial, data = bethIV_2_lata)
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -1.69673    1.37520  -1.234    0.217
+## wiek        -0.02941    0.02672  -1.101    0.271
+## sexM         0.85632    0.85279   1.004    0.315
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 65.455  on 179  degrees of freedom
+## Residual deviance: 63.242  on 177  degrees of freedom
+## AIC: 69.242
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>exp(coef(model2))</code></pre>
+<pre><code>## (Intercept)        wiek        sexM 
+##   0.1832826   0.9710218   2.3544778</code></pre>
+<pre class="r"><code>exp(confint(model2))</code></pre>
+<pre><code>##                  2.5 %    97.5 %
+## (Intercept) 0.01080915  2.590812
+## wiek        0.91746869  1.020809
+## sexM        0.32880631 11.117546</code></pre>
+<pre class="r"><code>BIC(model0, model1, model2)</code></pre>
+<pre><code>##        df      BIC
+## model0  1 70.64826
+## model1  2 74.51094
+## model2  3 78.82060</code></pre>
+</div>
+<div id="model-3" class="section level2">
+<h2>Model 3</h2>
+<pre class="r"><code>model3 &lt;- glm(progresja ~ wiek * sex , data = bethIV_2_lata, family = binomial)
+summary(model3)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = progresja ~ wiek * sex, family = binomial, data = bethIV_2_lata)
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -1.99532    1.49071  -1.339    0.181
+## wiek        -0.02339    0.02851  -0.820    0.412
+## sexM         3.11530    4.22548   0.737    0.461
+## wiek:sexM   -0.04692    0.08846  -0.530    0.596
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 65.455  on 179  degrees of freedom
+## Residual deviance: 62.921  on 176  degrees of freedom
+## AIC: 70.921
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>exp(coef(model3))</code></pre>
+<pre><code>## (Intercept)        wiek        sexM   wiek:sexM 
+##   0.1359704   0.9768830  22.5402352   0.9541655</code></pre>
+<pre class="r"><code>exp(confint(model3))</code></pre>
+<pre><code>##                   2.5 %       97.5 %
+## (Intercept) 0.005924313 2.328090e+00
+## wiek        0.919695335 1.031257e+00
+## sexM        0.010375041 3.970666e+05
+## wiek:sexM   0.762975130 1.102828e+00</code></pre>
+<pre class="r"><code>BIC(model0, model1, model2, model3)</code></pre>
+<pre><code>##        df      BIC
+## model0  1 70.64826
+## model1  2 74.51094
+## model2  3 78.82060
+## model3  4 83.69328</code></pre>
+</div>
+<div id="model-4" class="section level2">
+<h2>Model 4</h2>
+<pre class="r"><code>model4 &lt;- glm(progresja ~ wiek * sex + obj_1, data = bethIV_2_lata, family = binomial)
+summary(model4)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = progresja ~ wiek * sex + obj_1, family = binomial, 
+##     data = bethIV_2_lata)
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -1.96523    1.48508  -1.323    0.186
+## wiek        -0.02606    0.02886  -0.903    0.367
+## sexM         2.81566    4.26182   0.661    0.509
+## obj_1        0.06451    0.09694   0.665    0.506
+## wiek:sexM   -0.04086    0.08921  -0.458    0.647
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 65.455  on 179  degrees of freedom
+## Residual deviance: 62.560  on 175  degrees of freedom
+## AIC: 72.56
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>exp(coef(model4))</code></pre>
+<pre><code>## (Intercept)        wiek        sexM       obj_1   wiek:sexM 
+##   0.1401240   0.9742781  16.7042052   1.0666379   0.9599602</code></pre>
+<pre class="r"><code>exp(confint(model4))</code></pre>
+<pre><code>##                   2.5 %       97.5 %
+## (Intercept) 0.006127819 2.351878e+00
+## wiek        0.916867137 1.029260e+00
+## sexM        0.007412597 3.249632e+05
+## obj_1       0.811860142 1.248410e+00
+## wiek:sexM   0.765783737 1.110649e+00</code></pre>
+<pre class="r"><code>BIC(model0, model1, model2, model3, model4)</code></pre>
+<pre><code>##        df      BIC
+## model0  1 70.64826
+## model1  2 74.51094
+## model2  3 78.82060
+## model3  4 83.69328
+## model4  5 88.52521</code></pre>
+</div>
+<div id="model-5" class="section level2">
+<h2>Model 5</h2>
+<pre class="r"><code>model5 &lt;- glm(progresja ~ wiek * sex + obj_1 +  onkocytarna + AITD, data = bethIV_2_lata, family = binomial)
+summary(model5)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = progresja ~ wiek * sex + obj_1 + onkocytarna + 
+##     AITD, family = binomial, data = bethIV_2_lata)
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -2.10567    1.58601  -1.328    0.184
+## wiek        -0.02206    0.02989  -0.738    0.460
+## sexM         3.21777    4.41003   0.730    0.466
+## obj_1        0.05158    0.09802   0.526    0.599
+## onkocytarna -0.62000    1.10840  -0.559    0.576
+## AITD         0.28646    0.88721   0.323    0.747
+## wiek:sexM   -0.04921    0.09176  -0.536    0.592
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 65.455  on 179  degrees of freedom
+## Residual deviance: 62.133  on 173  degrees of freedom
+## AIC: 76.133
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>exp(coef(model5))</code></pre>
+<pre><code>## (Intercept)        wiek        sexM       obj_1 onkocytarna        AITD 
+##   0.1217642   0.9781775  24.9722959   1.0529358   0.5379448   1.3317098 
+##   wiek:sexM 
+##   0.9519821</code></pre>
+<pre class="r"><code>exp(confint(model5))</code></pre>
+<pre><code>##                   2.5 %       97.5 %
+## (Intercept) 0.004320175 2.474054e+00
+## wiek        0.918873561 1.035838e+00
+## sexM        0.008575870 5.517000e+05
+## obj_1       0.800877796 1.239968e+00
+## onkocytarna 0.027661499 3.396946e+00
+## AITD        0.176322146 6.820081e+00
+## wiek:sexM   0.759234680 1.106871e+00</code></pre>
+<pre class="r"><code>BIC(model0, model1, model2, model3, model4, model5)</code></pre>
+<pre><code>##        df      BIC
+## model0  1 70.64826
+## model1  2 74.51094
+## model2  3 78.82060
+## model3  4 83.69328
+## model4  5 88.52521
+## model5  7 98.48418</code></pre>
+</div>
+<div id="model-6k" class="section level2">
+<h2>Model 6K</h2>
+<pre class="r"><code>model6k &lt;- glm(progresja ~ wiek  + obj_1 +  onkocytarna + AITD, data = dplyr::filter(bethIV_2_lata, sex==&quot;K&quot;), family = binomial)
+summary(model6k)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = progresja ~ wiek + obj_1 + onkocytarna + AITD, 
+##     family = binomial, data = dplyr::filter(bethIV_2_lata, sex == 
+##         &quot;K&quot;))
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -2.18383    1.61048  -1.356    0.175
+## wiek        -0.02274    0.03029  -0.751    0.453
+## obj_1        0.06849    0.10046   0.682    0.495
+## onkocytarna -0.40963    1.13819  -0.360    0.719
+## AITD         0.42820    0.93761   0.457    0.648
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 50.942  on 156  degrees of freedom
+## Residual deviance: 49.381  on 152  degrees of freedom
+## AIC: 59.381
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>exp(coef(model6k))</code></pre>
+<pre><code>## (Intercept)        wiek       obj_1 onkocytarna        AITD 
+##   0.1126099   0.9775214   1.0708923   0.6638977   1.5344999</code></pre>
+<pre class="r"><code>exp(confint(model6k))</code></pre>
+<pre><code>##                   2.5 %   97.5 %
+## (Intercept) 0.003751577 2.372310
+## wiek        0.917416215 1.035908
+## obj_1       0.803140891 1.274433
+## onkocytarna 0.033176798 4.644325
+## AITD        0.187453176 8.932849</code></pre>
+<pre class="r"><code>BIC(model6k)</code></pre>
+<pre><code>## [1] 74.66235</code></pre>
+</div>
+<div id="model-6m" class="section level2">
+<h2>Model 6M</h2>
+<pre class="r"><code>model6m &lt;- glm(progresja ~ wiek  + obj_1 +  onkocytarna + AITD, data = dplyr::filter(bethIV_2_lata, sex==&quot;M&quot;), family = binomial)
+summary(model6m)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = progresja ~ wiek + obj_1 + onkocytarna + AITD, 
+##     family = binomial, data = dplyr::filter(bethIV_2_lata, sex == 
+##         &quot;M&quot;))
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)    1.43540    4.01944   0.357    0.721
+## wiek          -0.06686    0.08268  -0.809    0.419
+## obj_1         -0.11752    0.37687  -0.312    0.755
+## onkocytarna  -17.63031 5922.81271  -0.003    0.998
+## AITD         -17.24174 6103.74511  -0.003    0.998
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 13.590  on 22  degrees of freedom
+## Residual deviance: 11.452  on 18  degrees of freedom
+## AIC: 21.452
+## 
+## Number of Fisher Scoring iterations: 18</code></pre>
+<pre class="r"><code>exp(coef(model6m))</code></pre>
+<pre><code>##  (Intercept)         wiek        obj_1  onkocytarna         AITD 
+## 4.201314e+00 9.353238e-01 8.891254e-01 2.204207e-08 3.250940e-08</code></pre>
+<pre class="r"><code>exp(confint(model6m))</code></pre>
+<pre><code>##                  2.5 %       97.5 %
+## (Intercept) 0.00280965 51956.505508
+## wiek        0.75816568     1.066715
+## obj_1       0.16339732     1.409589
+## onkocytarna         NA          Inf
+## AITD                NA          Inf</code></pre>
+<pre class="r"><code>BIC(model6m)</code></pre>
+<pre><code>## [1] 27.12913</code></pre>
 </div>
 
 
