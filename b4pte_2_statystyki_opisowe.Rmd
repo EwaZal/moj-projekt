@@ -397,7 +397,7 @@ ggplot(data = bethIV_2_lata, aes(x = !is.na(progresja_vol50), y = wiek, fill = !
   scale_fill_manual(values = c("gray89", "gray27"))  +
   scale_x_discrete(labels= c("bez progresji", "z progresją")) +
   labs(x = "Kryterium progresji to wzrost objętości zmiany o > 50%", y = "Wiek [lata]") +
-  stat_compare_means(method = label = "p.format", size = 4) +
+#  stat_compare_means(method = label = "p.format", size = 4) +
   theme_bw() +
   theme(legend.position = "none")
 ```
