@@ -2,7 +2,9 @@
 title: "Bethesda IV - Przygotowanie zbioru danych"
 author: "Piotr Wiśniewski, Gosia Struk-Panfil, Ewa Zalewska"
 date:  "`r format(Sys.time(), '%e %b %Y, godz. %H:%M')`"
-output: html_document
+output:
+  html_document:
+    code_folding: hide
 ---
 
 ```{r, include=FALSE} 
@@ -63,7 +65,7 @@ bethIV_2_lata %>%
 ```
 
 # algorytm MICE 
-``` {r echo=FALSE}
+``` {r}
 kolumny_do_imputacji <- c("wym1", "wym2", "wym3", "wym4", "wym5", "wym6")
 dane_subset <- bethIV_2_lata[, kolumny_do_imputacji]
 
@@ -82,7 +84,7 @@ summary(bethIV_2_lata)
 ## Uszereguj wartosci w kolumnach od najwieszej do najmniejszej:
 ### A-C wymiary od największego do najmniejszgo na początku obserwacji:
 ### D-F wymiary od największego do najmniejszego na koniec obserwacji:
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata <- mutate(bethIV_2_lata, wymA = pmax(bethIV_2_lata$wym1, bethIV_2_lata$wym2, bethIV_2_lata$wym3))
 bethIV_2_lata <- mutate(bethIV_2_lata, wymB = apply(bethIV_2_lata[, c("wym1", "wym2", "wym3")], 1, function(x) sort(x)[2]))
 bethIV_2_lata <- mutate(bethIV_2_lata, wymC = pmin(bethIV_2_lata$wym1, bethIV_2_lata$wym2, bethIV_2_lata$wym3))
@@ -94,7 +96,7 @@ bethIV_2_lata <- mutate(bethIV_2_lata, wymF = pmin(bethIV_2_lata$wym4, bethIV_2_
 ```
 
 
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata <- bethIV_2_lata %>% 
   mutate(
     sprawdzenie_szeregu = ifelse((wymB > wymA) | (wymC > wymB) | (wymC > wymA) | (wymE > wymD) | (wymF > wymE) | (wymF > wymD), 1, 0)

@@ -2,12 +2,13 @@
 title: "Bethesda IV - Statystyki Opisowe"
 author: "Piotr Wiśniewski, Gosia Struk-Panfil, Ewa Zalewska"
 date:  "`r format(Sys.time(), '%e %b %Y, godz. %H:%M')`"
-output: html_document
+output:
+  html_document:
+    code_folding: hide
 ---
 
 ```{r, include=FALSE} 
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
-knitr::opts_chunk$set(echo = FALSE) 
 ```
 
 ```{r setup, include=FALSE}
@@ -29,7 +30,7 @@ if (file.exists(plik_dane_do_analizy)) {
 
 
 ## Rozkład zmiennych: wieku, czasu obserwacji i wymiaru guzków:
-``` {r echo = FALSE, fig1, fig.height = 3, fig.width = 3}
+``` {r  fig1, fig.height = 3, fig.width = 3}
 
 #testy shapiro-wilka
 shapiro.test(bethIV_2_lata$wiek)
@@ -52,96 +53,96 @@ qqnorm(bethIV_2_lata$wymF)
 
 ## Badanie ilosci kobiet i mężczyzn w grupie:
 
-``` {r echo=FALSE}
+``` {r}
 
 bethIV_2_lata %>%
   group_by(sex) %>%
   count()
 ``` 
 ## Jaki procent stanowiły kobiet?
-``` {r echo = FALSE, fig2, fig.height = 1.5, fig.width = 1.8, warning=FALSE}
+``` {r  fig2, fig.height = 1.5, fig.width = 1.8, warning=FALSE}
 
 bethIV_2_lata %>%
   summarise(procent_kobiet = 100 * mean(sex == "K", na.rm = TRUE))
 ``` 
 ## Jaka była średnia wieku?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   get_summary_stats(wiek, type = "common")
 ```
 ## Jaki był średni czas nadzoru pacjentów?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   get_summary_stats(czas_nadzoru_lata, type = "common")
 ```
 ## Jaki był największy guzek na początku obserwacji?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   get_summary_stats(wymA, type = "common")
 
 ```
 ## Jaki był największy guzek na koniec obserwacji?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   get_summary_stats(wymD, type = "common")
 
 ```
 ## Jaki był najmniejszy guzek początku obserwacji?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   get_summary_stats(wymC, type = "common")
 
 ```
 ## Jaki był najmniejszy guzek na koniec obserwacji?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   get_summary_stats(wymF, type = "common")
 
 ```
 ## Jaka była mediana wielkości biorąc pod uwagę wszystkie guzki (na początku i końcu obserwacji)? 
-``` {r echo=FALSE}
+``` {r}
 
 median(unlist(bethIV_2_lata[, c("wymA", "wymB", "wymC", "wymD", "wymE", "wymF")]), na.rm = TRUE)
 
 ```
 ## Jaka była mediana wielkości guzków na początku obserwacji?
-``` {r echo=FALSE}
+``` {r}
 median(unlist(bethIV_2_lata[, c("wymA", "wymB", "wymC")]), na.rm = TRUE)
 
 ```
 ## Jaka była mediana wielkości guzków na końcu obserwacji?
-``` {r echo=FALSE}
+``` {r}
 median(unlist(bethIV_2_lata[, c("wymD", "wymE", "wymF")]), na.rm = TRUE)
 
 ```
 ## Ile osób miało AITD?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   group_by(AITD) %>%
   count()
 ```
 ## Ile osób miało guzki oksyfilne?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   group_by(onkocytarna) %>%
   count()
 ```
 ## Ile osób miało progresję wielkości?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   group_by(progresja_vol50) %>%
   count()
 ```
 
 ## Ile osób zostało zoperowanych?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   group_by(operowany) %>%
   count()
 ```
 
 ## Ile osób z/bez progresji zostało zoperowanych?
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>%
   group_by(progresja_vol50, operowany) %>%
   count() %>% 
@@ -153,7 +154,7 @@ bethIV_2_lata %>%
 ```
 
 ## Jakie były rozp. hist-pat wśród osób z/bez progresji 
-``` {r echo=FALSE}
+``` {r}
 bethIV_2_lata %>% 
   filter(operowany==1) %>%
   group_by(progresja_vol50) %>%

@@ -2,7 +2,9 @@
 title: "Bethesda IV - Model Logistyczny"
 author: "Piotr Wiśniewski, Gosia Struk-Panfil, Ewa Zalewska"
 date:  "`r format(Sys.time(), '%e %b %Y, godz. %H:%M')`"
-output: html_document
+output:
+  html_document:
+    code_folding: hide
 ---
 
 ```{r, include=FALSE} 
@@ -20,7 +22,7 @@ if (file.exists(plik_dane_do_analizy)) {
 ```
 
 ## Z jakimi cechami wiązało się występowanie progresji w modelu logistycznym?
-``` {r echo=FALSE}
+``` {r}
 model <- glm(progresja ~ sex + wiek + onkocytarna + AITD, data = bethIV_2_lata, family = binomial)
 summary(model)
 # OR
