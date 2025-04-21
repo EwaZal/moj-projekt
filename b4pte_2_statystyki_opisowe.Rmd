@@ -164,7 +164,7 @@ bethIV_2_lata %>%
   pivot_wider(
     names_from = "progresja_vol50", 
     values_from = "n",     
-    names_expand = TRUE
+    names_prefix = "progresja_vol50 = ", 
   )  
 ```
 
