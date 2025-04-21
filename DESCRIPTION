@@ -1,6 +1,7 @@
 Package: thyroid-reporting
 Type: Project
 Title: Beth4-abstrakt-pte
+Version: 0.1.0
 Description: Analizy na potrzeby abstraktu na zjazd PTE 2025.
 Depends: R (>= 4.1.0)
 Imports:
