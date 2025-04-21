@@ -21,7 +21,7 @@ library(lubridate)
 library(mice)
 
 
-bethIV <- read_delim("beth4_EZ_v2.csv", delim = ";", 
+bethIV <- read_delim("beth4.csv", delim = ";", 
     escape_double = FALSE,locale = locale(decimal_mark = ","), trim_ws = TRUE)
 
 # Usunięcie wierszy z brakami danych (więcej niż 11 braków w danych)
@@ -148,4 +148,32 @@ bethIV_2_lata <- bethIV_2_lata %>%
 plik_dane_do_analizy <- "bethIV_2_lata.RDS"
 saveRDS(bethIV_2_lata, plik_dane_do_analizy)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
