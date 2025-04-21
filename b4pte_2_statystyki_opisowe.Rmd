@@ -129,13 +129,13 @@ bethIV_2_lata %>%
 ## Ile osób miało progresję wielkości?
 ``` {r echo=FALSE}
 bethIV_2_lata %>%
-  group_by(progresja) %>%
+  group_by(progresja_vol50) %>%
   count()
 ```
 ## Ile osób z progresją była zweryfikowana jako mająca raka?
 ``` {r echo=FALSE}
 bethIV_2_lata %>% 
-  group_by(progresja) %>%
+  group_by(progresja_vol50) %>%
   count(hist_pat)
 ```
 
