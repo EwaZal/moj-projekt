@@ -7,12 +7,15 @@ output: html_document
 
 ```{r, include=FALSE} 
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+knitr::opts_chunk$set(echo = FALSE) 
 ```
 
 ```{r setup, include=FALSE}
 
 library(dplyr)
 library(ggpubr)
+library(tidyr)
+library(scales)
 
 plik_dane_do_analizy <- "bethIV_2_lata.RDS"
  
@@ -134,5 +137,144 @@ bethIV_2_lata %>%
 bethIV_2_lata %>% 
   group_by(progresja) %>%
   count(hist_pat)
+```
+
+## Wykres indywidualnych zmian objętości guzków 
+
+```{r}
+wykr_zm_obj_dane_long <- bethIV_2_lata %>% 
+  select(pacjent_id, obj_1, obj_2) %>% 
+  pivot_longer(
+    cols = starts_with("obj_"),
+    names_to = "pomiar",
+    values_to = "objetosc"
+  ) %>%
+  mutate(
+    pomiar = factor(pomiar,
+     levels = c("obj_1", "obj_2"),
+     labels = c("początek", "koniec"))
+    ) %>%
+  mutate(
+    kierunek = if_else(objetosc[pomiar == "koniec"] >
+                             objetosc[pomiar == "początek"],
+                             "wzrost", "spadek"),
+    .by = pacjent_id)
+```
+
+### Skala y natywna
+
+```{r}
+wykr_zm_obj <- ggplot(wykr_zm_obj_dane_long, aes(x = pomiar, y = objetosc, color = kierunek, group = pacjent_id)) +
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  labs(
+    x = "moment pomiaru", 
+    y = "objętość guzka [ml]"
+  ) +
+  theme_classic2()
+
+wykr_zm_obj
+```
+
+### Skala y logarytmiczna
+
+```{r}
+wykr_zm_obj + scale_y_log10()
+```
+
+## Podsumowanie indywidualnych zmian objętości
+
+```{r}
+wykr_zm_obj_podsumowanie_dane <- wykr_zm_obj_dane_long |>
+  distinct(pacjent_id, kierunek) |>
+  count(kierunek) |>
+  mutate(prop = n / sum(n),
+         label = sprintf("%d (%.0f%%)", n, prop * 100))
+```
+
+```{r}
+ggplot(wykr_zm_obj_podsumowanie_dane,
+       aes(x = kierunek,
+           y = n,
+           fill = kierunek)) +
+  geom_col(width = 0.6, color = "black") +
+  geom_text(aes(label = label), vjust = -0.3, size = 5) +
+  scale_y_continuous(expand = expansion(mult = c(0, .07))) +
+  labs(x = "Zmiana objętości",
+       y = "Liczba osób" ) +
+  theme_classic2() +
+  theme(legend.position = "none")
+```
+
+## Ocena przyrostów objętości (tylko osoby z wzrostem objętości) 
+
+```{r}
+wykr_zm_obj_wzrosty_dane <- bethIV_2_lata %>% 
+  select(pacjent_id, starts_with("obj_")) %>% 
+  filter(obj_delta_ml > 0) 
+```
+
+```{r}
+wykr_zm_obj_wzrosty_dane %>% get_summary_stats(-pacjent_id, type="full")
+```
+
+```{r}
+ggplot(wykr_zm_obj_wzrosty_dane, aes(x=obj_delta_ml)) + 
+  geom_histogram(binwidth = 1, fill = "firebrick", colour = "grey20", alpha = .6) +
+  labs(x = "Przyrost objętości (ml)",
+       y = "Liczba pacjentów") +
+  theme_classic2()
+```
+
+```{r}
+ggplot(wykr_zm_obj_wzrosty_dane, aes(x=obj_delta_pct)) + 
+  geom_histogram( fill = "firebrick", colour = "grey20", alpha = .6) +
+  labs(x = "Przyrost objętości (% obj. początkowej)",
+       y = "Liczba pacjentów") +
+  theme_classic2()
+```
+
+```{r}
+wykr_zm_obj_wzrosty_dane <- wykr_zm_obj_wzrosty_dane %>% 
+  arrange(obj_delta_ml) %>% 
+  mutate(
+    pacjent_id_fct = factor(pacjent_id, levels = pacjent_id)
+  )
+
+ggplot(wykr_zm_obj_wzrosty_dane, aes(x = obj_delta_ml, y = pacjent_id_fct)) +
+  geom_segment(aes(xend = 0, yend = pacjent_id_fct),             
+               colour = "grey80") +
+  geom_point(size = 3, colour = "firebrick") +        
+  labs(x = "Przyrost objętości (ml)",
+       y = "Id pacjenta",
+       title = "tylko pacjenci z delta_obj_ml > 0") +
+  theme_minimal(base_size = 13) +
+  theme(panel.grid.major.y = element_blank())
+```
+
+```{r}
+wykr_zm_obj_wzrosty_dane <- wykr_zm_obj_wzrosty_dane %>% 
+  arrange(obj_delta_pct) %>% 
+  mutate(
+    pacjent_id_fct = factor(pacjent_id, levels = pacjent_id)
+  )
+
+wykr_zm_obj_wzrosty_pct <- ggplot(wykr_zm_obj_wzrosty_dane, aes(x = obj_delta_pct, y = pacjent_id_fct)) +
+  geom_segment(aes(xend = 0, yend = pacjent_id_fct),             
+               colour = "grey80") +
+  geom_point(size = 3, colour = "firebrick") +    
+  geom_vline(xintercept = 50, linetype = "dashed", colour = "black", linewidth = 0.8) +
+  scale_x_continuous(labels = label_percent(accuracy = 100, scale=1)) +
+  labs(x = "Przyrost objętości (% obj. początkowej)",
+       y = "Id pacjenta",
+       title = "tylko pacjenci z delta_obj_ml > 0 \nprzerywana pionowa linia oznacza przyrost = 50%") +
+  theme_minimal(base_size = 13) +
+  theme(panel.grid.major.y = element_blank())
+
+wykr_zm_obj_wzrosty_pct
+```
+
+```{r}
+ wykr_zm_obj_wzrosty_pct + scale_x_log10() 
 ```
 
