@@ -26,6 +26,8 @@ if (file.exists(plik_dane_do_analizy)) {
   stop(sprintf("Nie znaleziono pliku: `%s`. Uruchom notatnik przygotowujący zbiór danych!", plik_dane_do_analizy))
 }
 
+# Set global theme
+theme_set(theme_classic2(base_size = 13))
 ```
 
 
@@ -229,7 +231,6 @@ ggplot(wykr_zm_obj_podsumowanie_dane,
   scale_y_continuous(expand = expansion(mult = c(0, .07))) +
   labs(x = "Zmiana objętości",
        y = "Liczba osób" ) +
-  theme_classic2() +
   theme(legend.position = "none")
 ```
 
@@ -249,16 +250,14 @@ wykr_zm_obj_wzrosty_dane %>% get_summary_stats(-pacjent_id, type="full")
 ggplot(wykr_zm_obj_wzrosty_dane, aes(x=obj_delta_ml)) + 
   geom_histogram(binwidth = 1, fill = "firebrick", colour = "grey20", alpha = .6) +
   labs(x = "Przyrost objętości (ml)",
-       y = "Liczba pacjentów") +
-  theme_classic2()
+       y = "Liczba pacjentów")  
 ```
 
 ```{r}
 ggplot(wykr_zm_obj_wzrosty_dane, aes(x=obj_delta_pct)) + 
   geom_histogram( fill = "firebrick", colour = "grey20", alpha = .6) +
   labs(x = "Przyrost objętości (% obj. początkowej)",
-       y = "Liczba pacjentów") +
-  theme_classic2()
+       y = "Liczba pacjentów") 
 ```
 
 ```{r}
@@ -275,7 +274,6 @@ ggplot(wykr_zm_obj_wzrosty_dane, aes(x = obj_delta_ml, y = pacjent_id_fct)) +
   labs(x = "Przyrost objętości (ml)",
        y = "Id pacjenta",
        title = "tylko pacjenci z delta_obj_ml > 0") +
-  theme_minimal(base_size = 13) +
   theme(panel.grid.major.y = element_blank())
 ```
 
@@ -295,7 +293,6 @@ wykr_zm_obj_wzrosty_pct <- ggplot(wykr_zm_obj_wzrosty_dane, aes(x = obj_delta_pc
   labs(x = "Przyrost objętości (% obj. początkowej)",
        y = "Id pacjenta",
        title = "tylko pacjenci z delta_obj_ml > 0 \nprzerywana pionowa linia oznacza przyrost = 50%") +
-  theme_minimal(base_size = 13) +
   theme(panel.grid.major.y = element_blank())
 
 wykr_zm_obj_wzrosty_pct
@@ -303,6 +300,20 @@ wykr_zm_obj_wzrosty_pct
 
 ```{r}
  wykr_zm_obj_wzrosty_pct + scale_x_log10() 
+```
+
+## Czy przyrost objętości zależy od wielkości guzka?
+
+```{r}
+ggplot(bethIV_2_lata, aes(x = obj_1, y = obj_delta_ml)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth(method = "lm", se = TRUE, color = "red") +
+  labs(
+    x = "Objętość początkowa, log(obj_1)",
+    y = "Zmiana objętości, log(obj_delta_ml)"
+  )  
 ```
 
 ## Ile osób miało progresję wielkości wg kryterium przyrost obj. o >50% ?
