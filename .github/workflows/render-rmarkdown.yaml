@@ -32,11 +32,16 @@ jobs:
         run: |
           Rscript -e 'install.packages(c("rmarkdown", "knitr", "tidyverse", "scales", "ggpubr", "readr", "mice"))'
 
-      - name: Render Rmarkdown files to HTML and Commit Results
+      - name: Render changed or all Rmd files
         run: |
           mkdir -p docs
-          RMD_PATH=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '[.]Rmd$'))
+          RMD_PATH=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '[.]Rmd$' || true))
+          if [ ${#RMD_PATH[@]} -eq 0 ]; then
+            echo "No changed Rmds found — rendering all"
+            RMD_PATH=(*.Rmd)
+          fi
           for f in "${RMD_PATH[@]}"; do
+            echo "Rendering $f"
             Rscript -e "rmarkdown::render('$f', output_dir = 'docs')"
           done
           git config --local user.name "$GITHUB_ACTOR"
