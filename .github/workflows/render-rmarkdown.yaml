@@ -38,7 +38,7 @@ jobs:
 
       - name: Install R packages
         run: |
-          Rscript -e 'install.packages(c("rmarkdown", "knitr", "tidyverse", "scales", "ggpubr", "readr", "mice"))'
+          Rscript -e 'install.packages(c("rmarkdown", "knitr", "tidyverse", "scales", "ggpubr", "readr", "mice", "Hmisc"))'
 
       - name: Render changed or all Rmd files
         run: |
