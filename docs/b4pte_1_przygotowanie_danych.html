@@ -208,6 +208,83 @@ window.buildTabsets = function(tocID) {
 };
 
 </script>
+<script>
+window.initializeCodeFolding = function(show) {
+
+  // handlers for show-all and hide all
+  $("#rmd-show-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('show');
+    });
+  });
+  $("#rmd-hide-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('hide');
+    });
+  });
+
+  // index for unique code element ids
+  var currentIndex = 1;
+
+  // select all R code blocks
+  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
+  rCodeBlocks.each(function() {
+    // skip if the block has fold-none class
+    if ($(this).hasClass('fold-none')) return;
+
+    // create a collapsable div to wrap the code in
+    var div = $('<div class="collapse r-code-collapse"></div>');
+    var showThis = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
+    var id = 'rcode-643E0F36' + currentIndex++;
+    div.attr('id', id);
+    $(this).before(div);
+    $(this).detach().appendTo(div);
+
+    // add a show code button right above
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
+    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
+    showCodeButton.append(showCodeText);
+    showCodeButton
+        .attr('data-toggle', 'collapse')
+        .attr('data-bs-toggle', 'collapse') // BS5
+        .attr('data-target', '#' + id)
+        .attr('data-bs-target', '#' + id)   // BS5
+        .attr('aria-expanded', showThis)
+        .attr('aria-controls', id);
+
+    var buttonRow = $('<div class="row"></div>');
+    var buttonCol = $('<div class="col-md-12"></div>');
+
+    buttonCol.append(showCodeButton);
+    buttonRow.append(buttonCol);
+
+    div.before(buttonRow);
+
+    // show the div if necessary
+    if (showThis) div.collapse('show');
+
+    // update state of button on show/hide
+    //   * Change text
+    //   * add a class for intermediate states styling
+    div.on('hide.bs.collapse', function () {
+      showCodeText.text('Show');
+      showCodeButton.addClass('btn-collapsing');
+    });
+    div.on('hidden.bs.collapse', function () {
+      showCodeButton.removeClass('btn-collapsing');
+    });
+    div.on('show.bs.collapse', function () {
+      showCodeText.text('Hide');
+      showCodeButton.addClass('btn-expanding');
+    });
+    div.on('shown.bs.collapse', function () {
+      showCodeButton.removeClass('btn-expanding');
+    });
+
+  });
+
+}
+</script>
 <style type="text/css">.hljs-literal {
 color: #990073;
 }
@@ -331,6 +408,9 @@ display: none;
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -347,19 +427,31 @@ display: none;
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Bethesda IV - Przygotowanie zbioru
 danych</h1>
 <h4 class="author">Piotr Wiśniewski, Gosia Struk-Panfil, Ewa
 Zalewska</h4>
-<h4 class="date">21 Apr 2025, godz. 17:38</h4>
+<h4 class="date">21 Apr 2025, godz. 19:11</h4>
 
 </div>
 
 
 <div id="algorytm-mice" class="section level1">
 <h1>algorytm MICE</h1>
+<pre class="r"><code>kolumny_do_imputacji &lt;- c(&quot;wym1&quot;, &quot;wym2&quot;, &quot;wym3&quot;, &quot;wym4&quot;, &quot;wym5&quot;, &quot;wym6&quot;)
+dane_subset &lt;- bethIV_2_lata[, kolumny_do_imputacji]
+
+imputacja &lt;- mice(dane_subset, m = 5, method = &#39;pmm&#39;, seed = 123)</code></pre>
 <pre><code>## 
 ##  iter imp variable
 ##   1   1  wym1  wym2  wym3  wym5  wym6
@@ -387,6 +479,11 @@ Zalewska</h4>
 ##   5   3  wym1  wym2  wym3  wym5  wym6
 ##   5   4  wym1  wym2  wym3  wym5  wym6
 ##   5   5  wym1  wym2  wym3  wym5  wym6</code></pre>
+<pre class="r"><code>dane_imputowane &lt;- complete(imputacja, 1)
+
+bethIV_2_lata[, kolumny_do_imputacji] &lt;- dane_imputowane
+
+summary(bethIV_2_lata)</code></pre>
 <pre><code>##    pacjent_id          sex            data_urodzenia       jednoznaczny_BAC
 ##  Min.   :  95062   Length:180         Min.   :1937-03-14   Min.   :0.0000  
 ##  1st Qu.:1286134   Class :character   1st Qu.:1956-11-15   1st Qu.:1.0000  
@@ -436,6 +533,17 @@ obserwacji:</h3>
 <div id="d-f-wymiary-od-największego-do-najmniejszego-na-koniec-obserwacji" class="section level3">
 <h3>D-F wymiary od największego do najmniejszego na koniec
 obserwacji:</h3>
+<pre class="r"><code>bethIV_2_lata &lt;- mutate(bethIV_2_lata, wymA = pmax(bethIV_2_lata$wym1, bethIV_2_lata$wym2, bethIV_2_lata$wym3))
+bethIV_2_lata &lt;- mutate(bethIV_2_lata, wymB = apply(bethIV_2_lata[, c(&quot;wym1&quot;, &quot;wym2&quot;, &quot;wym3&quot;)], 1, function(x) sort(x)[2]))
+bethIV_2_lata &lt;- mutate(bethIV_2_lata, wymC = pmin(bethIV_2_lata$wym1, bethIV_2_lata$wym2, bethIV_2_lata$wym3))
+
+bethIV_2_lata &lt;- mutate(bethIV_2_lata, wymD = pmax(bethIV_2_lata$wym4, bethIV_2_lata$wym5, bethIV_2_lata$wym6))
+bethIV_2_lata &lt;- mutate(bethIV_2_lata, wymE = apply(bethIV_2_lata[, c(&quot;wym4&quot;, &quot;wym5&quot;, &quot;wym6&quot;)], 1, function(x) sort(x)[2]))
+bethIV_2_lata &lt;- mutate(bethIV_2_lata, wymF = pmin(bethIV_2_lata$wym4, bethIV_2_lata$wym5, bethIV_2_lata$wym6))</code></pre>
+<pre class="r"><code>bethIV_2_lata &lt;- bethIV_2_lata %&gt;% 
+  mutate(
+    sprawdzenie_szeregu = ifelse((wymB &gt; wymA) | (wymC &gt; wymB) | (wymC &gt; wymA) | (wymE &gt; wymD) | (wymF &gt; wymE) | (wymF &gt; wymD), 1, 0)
+  )</code></pre>
 </div>
 </div>
 </div>
@@ -458,6 +566,25 @@ obserwacji:</h3>
     # defincja w oparciu o przyrost obj. guzka &gt; 50%
     progresja_vol50 = ifelse(obj_delta_pct &gt; 50, 1L, 0L)
   )</code></pre>
+</div>
+<div id="definicja-zmian-zlosliwych" class="section level1">
+<h1>Definicja zmian zlosliwych:</h1>
+<div id="lagodne-zmiana-łagodna-zmiany-hiperplastyczne-gruczolak-pęcherzykowy-gruczolak-onkocytarny-aitd-o-niepewnym-potencjale-złośliwości-niftp-ftump-guz-pęcherzykowy" class="section level2">
+<h2>0 - lagodne (‘Zmiana łagodna’, ‘Zmiany hiperplastyczne’, ‘Gruczolak
+pęcherzykowy’, ‘Gruczolak onkocytarny’, ‘AITD’) + o niepewnym potencjale
+złośliwości (‘NIFTP’, ‘FTUMP’, ‘Guz pęcherzykowy’)</h2>
+</div>
+<div id="złośliwe-ptc-ftc-rak-onkocytarny-mtc-rak-niskozróżnicowany" class="section level2">
+<h2>1 - złośliwe (‘PTC’ | ‘FTC’ | ‘Rak onkocytarny’ | ‘MTC’ | ‘Rak
+niskozróżnicowany’)</h2>
+<pre class="r"><code># po odfiltrowaniu pacjentów z krótszym okresem obserwacji (&lt; 2) zostali jedynie pacjenci ze złośliwymi zmianami o typie &#39;FTC&#39;.
+
+bethIV_2_lata &lt;- bethIV_2_lata %&gt;%
+  mutate(zlosliwa = case_when(
+    grepl(&quot;PTC|FTC|Rak onkocytarny|Rak niskozróżnicowany|MTC&quot;, hist_pat) ~ 1,
+    TRUE ~ 0
+  ))</code></pre>
+</div>
 </div>
 <div id="zapisz-lokalnie-zbiór-danych-przeznaczony-do-analizy" class="section level1">
 <h1>Zapisz lokalnie zbiór danych przeznaczony do analizy</h1>
@@ -498,6 +625,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
