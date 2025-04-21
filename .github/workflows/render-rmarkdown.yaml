@@ -37,8 +37,7 @@ jobs:
             ${{ runner.os }}-r-
 
       - name: Install R packages
-        run: |
-          Rscript -e 'install.packages(c("rmarkdown", "knitr", "tidyverse", "scales", "ggpubr", "readr", "mice"))'
+        uses: r-lib/actions/setup-r-dependencies@v2
 
       - name: Render changed or all Rmd files
         run: |
