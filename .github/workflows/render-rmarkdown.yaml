@@ -31,7 +31,7 @@ jobs:
       - name: Cache R packages
         uses: actions/cache@v3
         with:
-          path: ~/.cache/R
+          path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-r-${{ hashFiles('**/DESCRIPTION') }}
           restore-keys: |
             ${{ runner.os }}-r-
@@ -39,15 +39,15 @@ jobs:
       - name: Install R packages
         uses: r-lib/actions/setup-r-dependencies@v2
 
-      - name: Render changed or all Rmd files
+      - name: Render all Rmd files (starting with b4pte_1_przygotowanie_danych.Rmd)
         run: |
           mkdir -p docs
-          RMD_PATH=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '[.]Rmd$' || true))
-          if [ ${#RMD_PATH[@]} -eq 0 ]; then
-            echo "No changed Rmds found — rendering all"
-            RMD_PATH=(*.Rmd)
-          fi
-          for f in "${RMD_PATH[@]}"; do
+      
+          echo "Rendering b4pte_1_przygotowanie_danych.Rmd"
+          Rscript -e "rmarkdown::render('b4pte_1_przygotowanie_danych.Rmd', output_dir = 'docs')"
+      
+          echo "Rendering remaining Rmd files"
+          find . -name '*.Rmd' ! -name 'b4pte_1_przygotowanie_danych.Rmd' -print0 | while IFS= read -r -d '' f; do
             echo "Rendering $f"
             Rscript -e "rmarkdown::render('$f', output_dir = 'docs')"
           done
