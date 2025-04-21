@@ -27,13 +27,17 @@ jobs:
         with:
           r-version: release
 
-      - uses: r-lib/actions/setup-renv@v2
+#      - uses: r-lib/actions/setup-renv@v2
 
-      - name: Render Rmarkdown files and Commit Results
+      - name: Render Rmarkdown files to HTML and Commit Results
         run: |
+          mkdir -p docs
           RMD_PATH=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '[.]Rmd$'))
-          Rscript -e 'for (f in commandArgs(TRUE)) if (file.exists(f)) rmarkdown::render(f)' ${RMD_PATH[*]}
+          for f in "${RMD_PATH[@]}"; do
+            Rscript -e "rmarkdown::render('$f', output_dir = 'docs')"
+          done
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git commit ${RMD_PATH[*]/.Rmd/.md} -m 'Re-build Rmarkdown files' || echo "No changes to commit"
+          git add docs
+          git commit -m 'Rendered Rmd files to docs/' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
