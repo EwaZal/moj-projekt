@@ -118,7 +118,10 @@ bethIV_2_lata <- bethIV_2_lata %>%
 ```{r}
 bethIV_2_lata <- bethIV_2_lata %>%
   mutate(
-    progresja = ifelse((wymD - wymA) > 2 & (wymB - wymE) > 2 | (wymD - wymA) > 2 & (wymC - wymF) > 2 | (wymC - wymF) > 2 & (wymB - wymE) > 2 | (wymD - wymA) > 2 & (wymB - wymE) > 2 & (wymC - wymF) > 2, 1, 0)
+    progresja = ifelse((wymD - wymA) > 2 & (wymB - wymE) > 2 | (wymD - wymA) > 2 & (wymC - wymF) > 2 | (wymC - wymF) > 2 & (wymB - wymE) > 2 | (wymD - wymA) > 2 & (wymB - wymE) > 2 & (wymC - wymF) > 2, 1, 0),
+    
+    # defincja w oparciu o przyrost obj. guzka > 50%
+    progresja_vol50 = ifelse(obj_delta_pct > 50, 1L, 0L)
   )
 ```
 
