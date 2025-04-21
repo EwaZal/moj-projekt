@@ -56,3 +56,15 @@ jobs:
           git add docs
           git commit -m 'Rendered Rmd files to docs/' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
+
+      - name: Generate index.html with links to rendered reports
+        run: |
+          echo "<html><head><meta charset='UTF-8'><title>Rendered Reports</title></head><body>" > docs/index.html
+          echo "<h1>Rendered R Markdown Reports</h1><ul>" >> docs/index.html
+          for f in docs/*.html; do
+            fname=$(basename "$f")
+            if [ "$fname" != "index.html" ]; then
+              echo "<li><a href=\"$fname\">$fname</a></li>" >> docs/index.html
+            fi
+          done
+          echo "</ul></body></html>" >> docs/index.html
