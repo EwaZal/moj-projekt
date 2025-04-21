@@ -278,3 +278,9 @@ wykr_zm_obj_wzrosty_pct
  wykr_zm_obj_wzrosty_pct + scale_x_log10() 
 ```
 
+## Ile osób miało progresję wielkości wg kryterium przyrost obj. o >50% ?
+
+```{r}
+bethIV_2_lata %>% 
+  count(progresja_vol50)
+```
