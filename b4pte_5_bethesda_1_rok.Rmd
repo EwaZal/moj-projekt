@@ -23,17 +23,18 @@ library(stringr)
 # Jak wygladałby zbiór jeśli chodzi o progresję i ilość zmian złośliwych gdy zostaliby pacjenci z obserwacją 1 rok i więcej (fragment kodu pobrany w większości z pliku b4pte:
 ```{r}
 
-bethIV <- read_delim("beth4_EZ_v2.csv", delim = ";", 
+bethIV <- read_delim("beth4.csv", delim = ";", 
     escape_double = FALSE,locale = locale(decimal_mark = ","), trim_ws = TRUE)
 
 # Usunięcie wierszy z brakami danych (więcej niż 11 braków w danych)
 bethIV <- bethIV %>%
   filter(rowSums(is.na(.)) <= 11)
+
 # Formatowanie wartości w kolumnach
-bethIV$data_wyjsciowa <- as.Date(bethIV$data_wyjsciowa, format = "%Y-%m-%d")
-bethIV$data_koncowa <- as.Date(bethIV$data_koncowa, format = "%Y-%m-%d")
-bethIV$data_urodzenia <- as.Date(bethIV$data_urodzenia, format = "%Y-%m-%d")
-bethIV$data_operacji <- as.Date(bethIV$data_operacji, format = "%Y-%m-%d")
+bethIV$data_wyjsciowa <- as.Date(bethIV$data_wyjsciowa, format = "%d.%m.%Y")
+bethIV$data_koncowa <- as.Date(bethIV$data_koncowa, format = "%d.%m.%Y")
+bethIV$data_urodzenia <- as.Date(bethIV$data_urodzenia, format = "%d.%m.%Y")
+bethIV$data_operacji <- as.Date(bethIV$data_operacji, format = "%d.%m.%Y")
 bethIV$wym1 <- as.numeric(bethIV$wym1)
 bethIV$wym2 <- as.numeric(bethIV$wym2)
 bethIV$wym3 <- as.numeric(bethIV$wym3)
