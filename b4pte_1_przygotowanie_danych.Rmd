@@ -29,10 +29,10 @@ bethIV <- bethIV %>%
   filter(rowSums(is.na(.)) <= 11)
 
 # Formatowanie wartości w kolumnach
-bethIV$data_wyjsciowa <- as.Date(bethIV$data_wyjsciowa, format = "%Y-%m-%d")
-bethIV$data_koncowa <- as.Date(bethIV$data_koncowa, format = "%Y-%m-%d")
-bethIV$data_urodzenia <- as.Date(bethIV$data_urodzenia, format = "%Y-%m-%d")
-bethIV$data_operacji <- as.Date(bethIV$data_operacji, format = "%Y-%m-%d")
+bethIV$data_wyjsciowa <- as.Date(bethIV$data_wyjsciowa, format = "%d.%m.%Y")
+bethIV$data_koncowa <- as.Date(bethIV$data_koncowa, format = "%d.%m.%Y")
+bethIV$data_urodzenia <- as.Date(bethIV$data_urodzenia, format = "%d.%m.%Y")
+bethIV$data_operacji <- as.Date(bethIV$data_operacji, format = "%d.%m.%Y")
 bethIV$wym1 <- as.numeric(bethIV$wym1)
 bethIV$wym2 <- as.numeric(bethIV$wym2)
 bethIV$wym3 <- as.numeric(bethIV$wym3)
