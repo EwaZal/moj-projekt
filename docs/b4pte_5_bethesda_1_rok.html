@@ -352,7 +352,7 @@ display: none;
 <h1 class="title toc-ignore">Bethesda IV - Statystyki Opisowe</h1>
 <h4 class="author">Piotr Wiśniewski, Gosia Struk-Panfil, Ewa
 Zalewska</h4>
-<h4 class="date">21 Apr 2025, godz. 19:11</h4>
+<h4 class="date">21 Apr 2025, godz. 22:04</h4>
 
 </div>
 
@@ -361,17 +361,18 @@ Zalewska</h4>
 <h1>Jak wygladałby zbiór jeśli chodzi o progresję i ilość zmian
 złośliwych gdy zostaliby pacjenci z obserwacją 1 rok i więcej (fragment
 kodu pobrany w większości z pliku b4pte:</h1>
-<pre class="r"><code>bethIV &lt;- read_delim(&quot;beth4_EZ_v2.csv&quot;, delim = &quot;;&quot;, 
+<pre class="r"><code>bethIV &lt;- read_delim(&quot;beth4.csv&quot;, delim = &quot;;&quot;, 
     escape_double = FALSE,locale = locale(decimal_mark = &quot;,&quot;), trim_ws = TRUE)
 
 # Usunięcie wierszy z brakami danych (więcej niż 11 braków w danych)
 bethIV &lt;- bethIV %&gt;%
   filter(rowSums(is.na(.)) &lt;= 11)
+
 # Formatowanie wartości w kolumnach
-bethIV$data_wyjsciowa &lt;- as.Date(bethIV$data_wyjsciowa, format = &quot;%Y-%m-%d&quot;)
-bethIV$data_koncowa &lt;- as.Date(bethIV$data_koncowa, format = &quot;%Y-%m-%d&quot;)
-bethIV$data_urodzenia &lt;- as.Date(bethIV$data_urodzenia, format = &quot;%Y-%m-%d&quot;)
-bethIV$data_operacji &lt;- as.Date(bethIV$data_operacji, format = &quot;%Y-%m-%d&quot;)
+bethIV$data_wyjsciowa &lt;- as.Date(bethIV$data_wyjsciowa, format = &quot;%d.%m.%Y&quot;)
+bethIV$data_koncowa &lt;- as.Date(bethIV$data_koncowa, format = &quot;%d.%m.%Y&quot;)
+bethIV$data_urodzenia &lt;- as.Date(bethIV$data_urodzenia, format = &quot;%d.%m.%Y&quot;)
+bethIV$data_operacji &lt;- as.Date(bethIV$data_operacji, format = &quot;%d.%m.%Y&quot;)
 bethIV$wym1 &lt;- as.numeric(bethIV$wym1)
 bethIV$wym2 &lt;- as.numeric(bethIV$wym2)
 bethIV$wym3 &lt;- as.numeric(bethIV$wym3)
@@ -473,10 +474,10 @@ summary(bethIV_1_rok)</code></pre>
 ##  Min.   : 2.00   Min.   : 2.00   Min.   :0.0000   Min.   :2018-12-19  
 ##  1st Qu.: 6.00   1st Qu.: 8.00   1st Qu.:0.0000   1st Qu.:2021-11-18  
 ##  Median : 9.00   Median :11.00   Median :0.0000   Median :2022-11-09  
-##  Mean   :10.86   Mean   :13.52   Mean   :0.1718   Mean   :2022-08-11  
+##  Mean   :10.86   Mean   :13.52   Mean   :0.1698   Mean   :2022-08-11  
 ##  3rd Qu.:14.00   3rd Qu.:16.00   3rd Qu.:0.0000   3rd Qu.:2023-05-04  
 ##  Max.   :37.00   Max.   :45.00   Max.   :1.0000   Max.   :2024-11-28  
-##                                  NA&#39;s   :3        NA&#39;s   :220         
+##                                                   NA&#39;s   :220         
 ##    hist_pat         hist_pat_wariant        wiek       czas_nadzoru_lata
 ##  Length:265         Length:265         Min.   :21.36   Min.   : 1.000   
 ##  Class :character   Class :character   1st Qu.:42.03   1st Qu.: 1.727   
