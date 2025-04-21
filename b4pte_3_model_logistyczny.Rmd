@@ -31,3 +31,85 @@ exp(coef(model))
 exp(confint(model))
 ```
 
+## Model 0 
+
+```{r}
+model0 <- glm(progresja ~ 1, data = bethIV_2_lata, family = binomial)
+summary(model0)
+exp(coef(model0))
+exp(confint(model0))
+BIC(model0)
+```
+
+
+## Model 1 
+
+```{r}
+model1 <- glm(progresja ~ wiek , data = bethIV_2_lata, family = binomial)
+summary(model1)
+exp(coef(model1))
+exp(confint(model1))
+BIC(model0, model1)
+```
+
+## Model 2
+
+```{r}
+model2 <- glm(progresja ~ wiek + sex , data = bethIV_2_lata, family = binomial)
+summary(model2)
+exp(coef(model2))
+exp(confint(model2))
+BIC(model0, model1, model2)
+```
+
+## Model 3
+
+```{r}
+model3 <- glm(progresja ~ wiek * sex , data = bethIV_2_lata, family = binomial)
+summary(model3)
+exp(coef(model3))
+exp(confint(model3))
+BIC(model0, model1, model2, model3)
+```
+
+## Model 4
+
+```{r}
+model4 <- glm(progresja ~ wiek * sex + obj_1, data = bethIV_2_lata, family = binomial)
+summary(model4)
+exp(coef(model4))
+exp(confint(model4))
+BIC(model0, model1, model2, model3, model4)
+```
+
+## Model 5
+
+```{r}
+model5 <- glm(progresja ~ wiek * sex + obj_1 +  onkocytarna + AITD, data = bethIV_2_lata, family = binomial)
+summary(model5)
+exp(coef(model5))
+exp(confint(model5))
+BIC(model0, model1, model2, model3, model4, model5)
+```
+
+
+## Model 6K
+
+```{r}
+model6k <- glm(progresja ~ wiek  + obj_1 +  onkocytarna + AITD, data = dplyr::filter(bethIV_2_lata, sex=="K"), family = binomial)
+summary(model6k)
+exp(coef(model6k))
+exp(confint(model6k))
+BIC(model6k)
+```
+
+
+## Model 6M
+
+```{r}
+model6m <- glm(progresja ~ wiek  + obj_1 +  onkocytarna + AITD, data = dplyr::filter(bethIV_2_lata, sex=="M"), family = binomial)
+summary(model6m)
+exp(coef(model6m))
+exp(confint(model6m))
+BIC(model6m)
+```
