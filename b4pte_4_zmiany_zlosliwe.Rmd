@@ -1,0 +1,54 @@
+---
+title: "Bethesda IV - Statystyki Opisowe"
+author: "Piotr Wiśniewski, Gosia Struk-Panfil, Ewa Zalewska"
+date:  "`r format(Sys.time(), '%e %b %Y, godz. %H:%M')`"
+output: html_document
+---
+
+```{r, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r setup, include=FALSE}
+
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(ggpubr)
+library(lubridate)
+library(mice)
+library(stringr)
+
+plik_dane_do_analizy <- "bethIV_2_lata.RDS"
+ 
+if (file.exists(plik_dane_do_analizy)) {
+  bethIV_2_lata <- readRDS(plik_dane_do_analizy)
+} else {
+  stop(sprintf("Nie znaleziono pliku: `%s`. Uruchom notatnik przygotowujący zbiór danych!", plik_dane_do_analizy))
+}
+
+```
+
+# Definicja zmian zlosliwych:
+## 0 - lagodne ('Zmiana łagodna', 'Zmiany hiperplastyczne', 'Gruczolak pęcherzykowy', 'Gruczolak onkocytarny', 'AITD') + o niepewnym potencjale złośliwości ('NIFTP', 'FTUMP', 'Guz pęcherzykowy')
+## 1 - złośliwe ('PTC' | 'FTC' | 'Rak onkocytarny' | 'MTC' | 'Rak niskozróżnicowany')
+
+```{r}
+table(bethIV_2_lata$hist_pat)
+# po odfiltrowaniu pacjentów z krótszym okresem obserwacji (< 2) zostali jedynie pacjenci ze złośliwymi zmianami o typie 'FTC'.
+
+bethIV_2_lata <- bethIV_2_lata %>%
+  mutate(zlosliwa = case_when(
+    str_detect(hist_pat, "PTC|FTC|Rak onkocytarny|Rak niskozróżnicowany|MTC") ~ 1,
+    TRUE ~ 0
+  ))
+```
+
+# Jak wygląda nowa kolumna:
+```{r}
+
+bethIV_2_lata %>%
+  group_by(zlosliwa) %>%
+  count(hist_pat)
+
+```
