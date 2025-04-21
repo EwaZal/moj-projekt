@@ -29,7 +29,7 @@ jobs:
 
       - name: Install R packages
         run: |
-          Rscript -e 'install.packages(c("rmarkdown", "knitr", "tidyverse", "scales", "ggpubr"))'
+          Rscript -e 'install.packages(c("rmarkdown", "knitr", "tidyverse", "scales", "ggpubr", "readr", "mice"))'
 
       - name: Render Rmarkdown files to HTML and Commit Results
         run: |
