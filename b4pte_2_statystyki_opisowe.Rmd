@@ -466,4 +466,6 @@ mosaicplot(~ progresja_vol50 + zlosliwa, data = bethIV_2_lata, color = TRUE)
 
 pairwise_fisher_test(table(bethIV_2_lata$progresja_vol50, bethIV_2_lata$zlosliwa), p.adjust.method = "fdr")
 
+fisher.test(table(bethIV_2_lata$progresja_vol50, bethIV_2_lata$zlosliwa))
+
 ```
