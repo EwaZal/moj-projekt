@@ -133,12 +133,26 @@ bethIV_2_lata %>%
   group_by(AITD) %>%
   count()
 ```
+## Jaki procent stanowiły osoby z AITD?
+``` {r}
+
+bethIV_2_lata %>%
+  summarise(procent_AITD = 100 * mean(AITD == 1, na.rm = TRUE))
+``` 
+
 ## Ile osób miało guzki oksyfilne?
 ``` {r}
 bethIV_2_lata %>%
   group_by(onkocytarna) %>%
   count()
 ```
+## Jaki procent stanowiły osoby ze zmianami onkocytarnymi?
+``` {r}
+
+bethIV_2_lata %>%
+  summarise(procent_onkocytarna = 100 * mean(onkocytarna == 1, na.rm = TRUE))
+``` 
+
 ## Ile osób miało progresję wielkości?
 ``` {r}
 bethIV_2_lata %>%
