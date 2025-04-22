@@ -441,7 +441,7 @@ display: none;
 danych</h1>
 <h4 class="author">Piotr Wiśniewski, Gosia Struk-Panfil, Ewa
 Zalewska</h4>
-<h4 class="date">22 Apr 2025, godz. 20:32</h4>
+<h4 class="date">22 Apr 2025, godz. 21:25</h4>
 
 </div>
 
@@ -554,7 +554,8 @@ bethIV_2_lata &lt;- mutate(bethIV_2_lata, wymF = pmin(bethIV_2_lata$wym4, bethIV
     obj_1 = 0.001 * wymA * wymB * wymC * pi / 6,
     obj_2 = 0.001 * wymD * wymE * wymF * pi / 6,
     obj_delta_ml = obj_2 - obj_1,
-    obj_delta_pct = 100 * (obj_2 - obj_1) / obj_1
+    obj_delta_pct = 100 * (obj_2 - obj_1) / obj_1,
+    obj_log_fold_change = log(obj_2 / obj_1)
   )</code></pre>
 </div>
 <div id="definicja-progresji-wielkości-guzka" class="section level1">
