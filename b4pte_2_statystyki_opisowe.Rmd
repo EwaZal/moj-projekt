@@ -416,3 +416,22 @@ ggplot(beth_clean, aes(x = progresja_grupa, y = wiek, fill = progresja_grupa)) +
   theme(legend.position = "none")
 
 ```
+
+## Badanie ilosci osób ze zmianą złośliwą w grupie osób z progresją_vol50 i bez:
+
+``` {r}
+
+bethIV_2_lata %>%
+  group_by(progresja_vol50) %>%
+  count(zlosliwa)
+```
+
+## Badanie istotności różnicy w proporcji zmian złośiwych i łagodnych w grupie osób z progresją_vol50 i bez:
+``` {r}
+
+
+mosaicplot(~ progresja_vol50 + zlosliwa, data = bethIV_2_lata, color = TRUE)
+
+pairwise_fisher_test(table(bethIV_2_lata$progresja_vol50, bethIV_2_lata$zlosliwa), p.adjust.method = "fdr")
+
+```
