@@ -447,8 +447,15 @@ ggplot(beth_clean, aes(x = progresja_grupa, y = wiek, fill = progresja_grupa)) +
 ``` {r}
 
 bethIV_2_lata %>%
+  count(zlosliwa)
+
+bethIV_2_lata %>%
   group_by(progresja_vol50) %>%
   count(zlosliwa)
+
+bethIV_2_lata %>%
+  group_by(progresja_vol50) %>%
+  summarise(procent_zlosliwy = 100 * mean(zlosliwa == 1, na.rm = TRUE))
 ```
 
 ## Badanie istotności różnicy w proporcji zmian złośiwych i łagodnych w grupie osób z progresją_vol50 i bez:
