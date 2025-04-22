@@ -441,7 +441,10 @@ ggplot(beth_clean, aes(x = progresja_grupa, y = wiek, fill = progresja_grupa)) +
 
 ``` {r}
 
-bethIV_2_lata %>%
+bethIV_2_lata_operowani <- bethIV_2_lata %>%
+  filter(operowany == 1)
+
+  bethIV_2_lata_operowani %>%
   group_by(progresja_vol50) %>%
   count(zlosliwa)
 ```
@@ -450,8 +453,8 @@ bethIV_2_lata %>%
 ``` {r}
 
 
-mosaicplot(~ progresja_vol50 + zlosliwa, data = bethIV_2_lata, color = TRUE)
 
-pairwise_fisher_test(table(bethIV_2_lata$progresja_vol50, bethIV_2_lata$zlosliwa), p.adjust.method = "fdr")
+mosaicplot(~ progresja_vol50 + zlosliwa, data = bethIV_2_lata_operowani, color = TRUE)
+
 
 ```
