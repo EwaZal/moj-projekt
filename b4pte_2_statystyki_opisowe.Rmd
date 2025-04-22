@@ -172,6 +172,11 @@ bethIV_2_lata %>%
   group_by(operowany) %>%
   count()
 ```
+## Ile procent osób został zoperowanych?
+``` {r}
+bethIV_2_lata %>%
+  summarise(procent_operowany = 100 * mean(operowany == 1, na.rm = TRUE))
+``` 
 
 ## Ile osób z/bez progresji zostało zoperowanych?
 ``` {r}
