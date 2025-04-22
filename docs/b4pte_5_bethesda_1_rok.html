@@ -352,7 +352,7 @@ display: none;
 <h1 class="title toc-ignore">Bethesda IV - Statystyki Opisowe</h1>
 <h4 class="author">Piotr Wiśniewski, Gosia Struk-Panfil, Ewa
 Zalewska</h4>
-<h4 class="date">21 Apr 2025, godz. 22:31</h4>
+<h4 class="date">22 Apr 2025, godz. 16:14</h4>
 
 </div>
 
@@ -657,28 +657,27 @@ początku i końcu obserwacji)?</h2>
 <div id="ile-osób-z-progresją-była-zweryfikowana-jako-mająca-raka" class="section level2">
 <h2>Ile osób z progresją była zweryfikowana jako mająca raka?</h2>
 <pre><code>## 
-##                   AITD                    FTC                  FTUMP 
-##                      1                      7                      3 
-##              gruczolak                  NIFTP                    PTC 
-##                     15                      4                      1 
-##         zmiana łagodna zmiany hiperplastyczne 
-##                      1                     10</code></pre>
-<pre><code>## # A tibble: 12 × 3
+##                    FTC                  FTUMP              gruczolak 
+##                      7                      3                     15 
+##                  NIFTP                    PTC         zmiana łagodna 
+##                      4                      1                      2 
+## zmiany hiperplastyczne 
+##                     10</code></pre>
+<pre><code>## # A tibble: 11 × 3
 ## # Groups:   progresja [2]
 ##    progresja hist_pat                   n
 ##        &lt;dbl&gt; &lt;chr&gt;                  &lt;int&gt;
-##  1         0 AITD                       1
-##  2         0 FTC                        6
-##  3         0 FTUMP                      3
-##  4         0 NIFTP                      4
-##  5         0 PTC                        1
-##  6         0 gruczolak                 15
-##  7         0 zmiana łagodna             1
-##  8         0 zmiany hiperplastyczne     9
-##  9         0 &lt;NA&gt;                     209
-## 10         1 FTC                        1
-## 11         1 zmiany hiperplastyczne     1
-## 12         1 &lt;NA&gt;                      14</code></pre>
+##  1         0 FTC                        6
+##  2         0 FTUMP                      3
+##  3         0 NIFTP                      4
+##  4         0 PTC                        1
+##  5         0 gruczolak                 15
+##  6         0 zmiana łagodna             2
+##  7         0 zmiany hiperplastyczne     9
+##  8         0 &lt;NA&gt;                     209
+##  9         1 FTC                        1
+## 10         1 zmiany hiperplastyczne     1
+## 11         1 &lt;NA&gt;                      14</code></pre>
 </div>
 </div>
 <div id="definicja-zmian-zlosliwych---teraz-praca-na-zbiorze-bethiv_1_rok" class="section level1">
@@ -694,12 +693,12 @@ złośliwości (‘NIFTP’, ‘FTUMP’, ‘Guz pęcherzykowy’)</h2>
 niskozróżnicowany’)</h2>
 <pre class="r"><code>table(bethIV_1_rok$hist_pat)</code></pre>
 <pre><code>## 
-##                   AITD                    FTC                  FTUMP 
-##                      1                      7                      3 
-##              gruczolak                  NIFTP                    PTC 
-##                     15                      4                      1 
-##         zmiana łagodna zmiany hiperplastyczne 
-##                      1                     10</code></pre>
+##                    FTC                  FTUMP              gruczolak 
+##                      7                      3                     15 
+##                  NIFTP                    PTC         zmiana łagodna 
+##                      4                      1                      2 
+## zmiany hiperplastyczne 
+##                     10</code></pre>
 <pre class="r"><code># po odfiltrowaniu pacjentów z krótszym okresem obserwacji (&lt; 2) zostali pacjenci ze złośliwymi zmianami o typie &#39;FTC&#39; i 1 &#39;PTC&#39;.
 
 bethIV_1_rok &lt;- bethIV_1_rok %&gt;%
@@ -714,19 +713,18 @@ bethIV_1_rok &lt;- bethIV_1_rok %&gt;%
 <pre class="r"><code>bethIV_1_rok %&gt;%
   group_by(zlosliwa) %&gt;%
   count(hist_pat)</code></pre>
-<pre><code>## # A tibble: 9 × 3
+<pre><code>## # A tibble: 8 × 3
 ## # Groups:   zlosliwa [2]
 ##   zlosliwa hist_pat                   n
 ##      &lt;dbl&gt; &lt;chr&gt;                  &lt;int&gt;
-## 1        0 AITD                       1
-## 2        0 FTUMP                      3
-## 3        0 NIFTP                      4
-## 4        0 gruczolak                 15
-## 5        0 zmiana łagodna             1
-## 6        0 zmiany hiperplastyczne    10
-## 7        0 &lt;NA&gt;                     223
-## 8        1 FTC                        7
-## 9        1 PTC                        1</code></pre>
+## 1        0 FTUMP                      3
+## 2        0 NIFTP                      4
+## 3        0 gruczolak                 15
+## 4        0 zmiana łagodna             2
+## 5        0 zmiany hiperplastyczne    10
+## 6        0 &lt;NA&gt;                     223
+## 7        1 FTC                        7
+## 8        1 PTC                        1</code></pre>
 <pre class="r"><code>bethIV_1_rok %&gt;%
   filter(hist_pat == &quot;PTC&quot;)</code></pre>
 <pre><code>## # A tibble: 1 × 28
