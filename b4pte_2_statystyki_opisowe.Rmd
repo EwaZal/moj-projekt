@@ -30,6 +30,8 @@ if (file.exists(plik_dane_do_analizy)) {
 
 # Set global theme
 theme_set(theme_classic2(base_size = 13))
+
+
 ```
 
 
@@ -389,15 +391,28 @@ bethIV_2_lata %>%
 
 ## Badanie istotności różnicy wieku w grupie osób z progresją_vol50 i bez:
 ``` {r}
-wilcox.test(wiek ~ progresja_vol50, data = subset(bethIV_2_lata, !is.na(progresja_vol50)))
+
+# Przygotowanie danych: tylko TRUE/FALSE, bez NA i z etykietami "tak"/"nie"
+beth_clean <- bethIV_2_lata %>%
+  mutate(progresja_logiczna = progresja_vol50 == 1) %>%     # zamiana 1/0 na TRUE/FALSE
+  filter(!is.na(progresja_logiczna)) %>%
+  mutate(progresja_grupa = factor(
+    if_else(progresja_logiczna, "z progresją", "bez progresji"),
+    levels = c("bez progresji", "z progresją")
+  ))
+
+# Test statystyczny – Wilcoxon
+wynik_testu <- wilcox.test(wiek ~ progresja_vol50, data = beth_clean)
 
 
-ggplot(data = bethIV_2_lata, aes(x = !is.na(progresja_vol50), y = wiek, fill = !is.na(progresja_vol50))) +
-  geom_boxplot(alpha = 0.5) +
-  scale_fill_manual(values = c("gray89", "gray27"))  +
-  scale_x_discrete(labels= c("bez progresji", "z progresją")) +
-  labs(x = "Kryterium progresji to wzrost objętości zmiany o > 50%", y = "Wiek [lata]") +
-#  stat_compare_means(method = label = "p.format", size = 4) +
+# Wykres
+ggplot(beth_clean, aes(x = progresja_grupa, y = wiek, fill = progresja_grupa)) +
+  geom_boxplot(alpha = 0.6, width = 0.5) +
+  labs(x = "Grupa pacjentów", y = "Wiek [lata]",
+       title = "Porównanie wieku w zależności od progresji zmian") +
+  stat_compare_means() +
+  scale_fill_manual(values = c("gray89", "gray27")) +
   theme_bw() +
   theme(legend.position = "none")
+
 ```
