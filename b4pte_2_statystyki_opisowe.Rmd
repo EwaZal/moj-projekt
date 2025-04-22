@@ -159,6 +159,12 @@ bethIV_2_lata %>%
   group_by(progresja_vol50) %>%
   count()
 ```
+## Jaki procent stanowiły osoby z progresją (biorąc pod uwagę objętość > 50%)?
+``` {r}
+
+bethIV_2_lata %>%
+  summarise(progresja_vol50 = 100 * mean(progresja_vol50 == 1, na.rm = TRUE))
+``` 
 
 ## Ile osób zostało zoperowanych?
 ``` {r}
