@@ -456,5 +456,28 @@ bethIV_2_lata_operowani <- bethIV_2_lata %>%
 
 mosaicplot(~ progresja_vol50 + zlosliwa, data = bethIV_2_lata_operowani, color = TRUE)
 
+pairwise_fisher_test(table(bethIV_2_lata_operowani$progresja_vol50, bethIV_2_lata_operowani$zlosliwa), p.adjust.method = "fdr")
 
 ```
+
+
+## obj_log_fold_change   -- ocena dynamiki wzrostu guzków
+
+zmienna określa ilukrotnie guzek powiększył swoją objętość w trakcie obserwacji. Punktem wyjścia jest $fold{\_}change=obj_2/obj_1$, ale wyrażone jest to na skali logarytmicznej, czyli ostatecznie $log{\_}fold{\_}change = log(obj_2/obj_1)$
+
+wartość obj_log_fold_change = log(2) = `r log(2)` odpowiada 2x powiększeniu się
+
+wartości logarytmów przykladowych wartości: 
+
+```{r}
+tibble(
+  x = c(2,3,4,5,10),
+  log_x = log(x)
+)
+```
+
+
+```{r}
+ggplot(bethIV_2_lata, aes(obj_log_fold_change)) + geom_histogram()
+```
+
