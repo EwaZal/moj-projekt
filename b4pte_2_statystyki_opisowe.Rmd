@@ -63,6 +63,14 @@ shapiro.test(bethIV_2_lata$wymF)
 qqnorm(bethIV_2_lata$wymF)
 ```
 
+## Badanie ilosci osob z wynikiem jednoznacznym i niejednoznacznym:
+
+``` {r}
+
+bethIV_2_lata %>%
+  count(jednoznaczny_BAC)
+``` 
+
 ## Badanie ilosci kobiet i mężczyzn w grupie:
 
 ``` {r}
