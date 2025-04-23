@@ -440,7 +440,7 @@ display: none;
 <h1 class="title toc-ignore">Bethesda IV - Statystyki Opisowe</h1>
 <h4 class="author">Piotr Wiśniewski, Gosia Struk-Panfil, Ewa
 Zalewska</h4>
-<h4 class="date">23 Apr 2025, godz. 09:19</h4>
+<h4 class="date">23 Apr 2025, godz. 09:26</h4>
 
 </div>
 
@@ -706,6 +706,15 @@ początku i końcu obserwacji)?</h2>
 ##       &lt;dbl&gt; &lt;int&gt;
 ## 1         0   145
 ## 2         1    35</code></pre>
+</div>
+<div id="ile-procent-osób-został-zoperowanych" class="section level2">
+<h2>Ile procent osób został zoperowanych?</h2>
+<pre class="r"><code>bethIV_2_lata %&gt;%
+  summarise(procent_operowany = 100 * mean(operowany == 1, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   procent_operowany
+##               &lt;dbl&gt;
+## 1              19.4</code></pre>
 </div>
 <div id="ile-osób-zbez-progresji-zostało-zoperowanych" class="section level2">
 <h2>Ile osób z/bez progresji zostało zoperowanych?</h2>
@@ -1011,7 +1020,10 @@ ggplot(beth_clean, aes(x = progresja_grupa, y = wiek, fill = progresja_grupa)) +
 <div id="badanie-ilosci-osób-ze-zmianą-złośliwą-w-grupie-osób-z-progresją_vol50-i-bez" class="section level2">
 <h2>Badanie ilosci osób ze zmianą złośliwą w grupie osób z
 progresją_vol50 i bez:</h2>
-<pre class="r"><code>  bethIV_2_lata_operowani %&gt;%
+<pre class="r"><code>bethIV_2_lata_operowani &lt;- bethIV_2_lata %&gt;%
+  filter(operowany == 1)
+
+bethIV_2_lata_operowani %&gt;%
   group_by(progresja_vol50) %&gt;%
   count(zlosliwa)</code></pre>
 <pre><code>## # A tibble: 4 × 3
@@ -1022,6 +1034,14 @@ progresją_vol50 i bez:</h2>
 ## 2               0        1     1
 ## 3               1        0    16
 ## 4               1        1     5</code></pre>
+<pre class="r"><code>bethIV_2_lata %&gt;%
+  group_by(progresja_vol50) %&gt;%
+  summarise(procent_zlosliwy = 100 * mean(zlosliwa == 1, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 2 × 2
+##   progresja_vol50 procent_zlosliwy
+##             &lt;int&gt;            &lt;dbl&gt;
+## 1               0             1.10
+## 2               1             5.62</code></pre>
 </div>
 <div id="badanie-istotności-różnicy-w-proporcji-zmian-złośiwych-i-łagodnych-w-grupie-osób-z-progresją_vol50-i-bez" class="section level2">
 <h2>Badanie istotności różnicy w proporcji zmian złośiwych i łagodnych w
@@ -1077,11 +1097,12 @@ z progresją</h2>
 <pre class="r"><code>  exp(quantile(bethIV_2_lata_progresja$obj_log_fold_change))</code></pre>
 <pre><code>##        0%       25%       50%       75%      100% 
 ##  1.500000  1.800000  2.285714  3.309091 18.666667</code></pre>
-<p>Wartości w skali procentowej</p>
+</div>
+<div id="wartości-w-skali-procentowej" class="section level1">
+<h1>Wartości w skali procentowej</h1>
 <pre class="r"><code>  100*(exp(quantile(bethIV_2_lata_progresja$obj_log_fold_change))-1)</code></pre>
 <pre><code>##        0%       25%       50%       75%      100% 
 ##   50.0000   80.0000  128.5714  230.9091 1766.6667</code></pre>
-</div>
 <div id="progresja_vol129-podział-pacj.-z-progresją-na-tych-z-względnie-mniejszą-i-większą" class="section level2">
 <h2>progresja_vol129 – podział pacj. z progresją na tych z względnie
 mniejszą i większą</h2>
@@ -1118,6 +1139,7 @@ grupie osób z progresją_vol129 i bez:</h2>
 ##   group1 group2     n     p p.adj p.adj.signif
 ## * &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       
 ## 1 0      1         35     1     1 ns</code></pre>
+</div>
 </div>
 
 
