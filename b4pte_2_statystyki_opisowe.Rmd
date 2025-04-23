@@ -194,6 +194,11 @@ bethIV_2_lata %>%
   group_by(operowany) %>%
   count()
 ```
+## Ile procent osób został zoperowanych?
+``` {r}
+bethIV_2_lata %>%
+  summarise(procent_operowany = 100 * mean(operowany == 1, na.rm = TRUE))
+``` 
 
 ## Ile osób z/bez progresji zostało zoperowanych?
 ``` {r}
@@ -462,9 +467,17 @@ ggplot(beth_clean, aes(x = progresja_grupa, y = wiek, fill = progresja_grupa)) +
 ## Badanie ilosci osób ze zmianą złośliwą w grupie osób z progresją_vol50 i bez:
 
 ``` {r}
-  bethIV_2_lata_operowani %>%
+
+bethIV_2_lata_operowani <- bethIV_2_lata %>%
+  filter(operowany == 1)
+
+bethIV_2_lata_operowani %>%
   group_by(progresja_vol50) %>%
   count(zlosliwa)
+
+bethIV_2_lata %>%
+  group_by(progresja_vol50) %>%
+  summarise(procent_zlosliwy = 100 * mean(zlosliwa == 1, na.rm = TRUE))
 ```
 
 ## Badanie istotności różnicy w proporcji zmian złośiwych i łagodnych w grupie osób z progresją_vol50 i bez:
@@ -520,8 +533,7 @@ Wartości w natywnej skali
   exp(quantile(bethIV_2_lata_progresja$obj_log_fold_change))
 ```
 
-
-Wartości w  skali procentowej
+# Wartości w  skali procentowej
 
 ```{r}
   100*(exp(quantile(bethIV_2_lata_progresja$obj_log_fold_change))-1)

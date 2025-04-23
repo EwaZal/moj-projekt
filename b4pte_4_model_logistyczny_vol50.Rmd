@@ -1,0 +1,115 @@
+---
+title: "Bethesda IV - Model Logistyczny"
+author: "Piotr Wiśniewski, Gosia Struk-Panfil, Ewa Zalewska"
+date:  "`r format(Sys.time(), '%e %b %Y, godz. %H:%M')`"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r setup, include=FALSE}
+plik_dane_do_analizy <- "bethIV_2_lata.RDS"
+ 
+if (file.exists(plik_dane_do_analizy)) {
+  bethIV_2_lata <- readRDS(plik_dane_do_analizy)
+} else {
+  stop(sprintf("Nie znaleziono pliku: `%s`. Uruchom notatnik przygotowujący zbiór danych!", plik_dane_do_analizy))
+}
+```
+
+## Z jakimi cechami wiązało się występowanie progresji w modelu logistycznym?
+``` {r}
+model <- glm(progresja_vol50 ~ sex + wiek + onkocytarna + AITD, data = bethIV_2_lata, family = binomial)
+summary(model)
+# OR
+exp(coef(model))
+# przedziały ufności 95%:
+exp(confint(model))
+```
+
+## Model 0 
+
+```{r}
+model0 <- glm(progresja_vol50 ~ 1, data = bethIV_2_lata, family = binomial)
+summary(model0)
+exp(coef(model0))
+exp(confint(model0))
+BIC(model0)
+```
+
+
+## Model 1 
+
+```{r}
+model1 <- glm(progresja_vol50 ~ wiek , data = bethIV_2_lata, family = binomial)
+summary(model1)
+exp(coef(model1))
+exp(confint(model1))
+BIC(model0, model1)
+```
+
+## Model 2
+
+```{r}
+model2 <- glm(progresja_vol50 ~ wiek + sex , data = bethIV_2_lata, family = binomial)
+summary(model2)
+exp(coef(model2))
+exp(confint(model2))
+BIC(model0, model1, model2)
+```
+
+## Model 3
+
+```{r}
+model3 <- glm(progresja_vol50 ~ wiek * sex , data = bethIV_2_lata, family = binomial)
+summary(model3)
+exp(coef(model3))
+exp(confint(model3))
+BIC(model0, model1, model2, model3)
+```
+
+## Model 4
+
+```{r}
+model4 <- glm(progresja_vol50 ~ wiek * sex + obj_1, data = bethIV_2_lata, family = binomial)
+summary(model4)
+exp(coef(model4))
+exp(confint(model4))
+BIC(model0, model1, model2, model3, model4)
+```
+
+## Model 5
+
+```{r}
+model5 <- glm(progresja_vol50 ~ wiek * sex + obj_1 +  onkocytarna + AITD, data = bethIV_2_lata, family = binomial)
+summary(model5)
+exp(coef(model5))
+exp(confint(model5))
+BIC(model0, model1, model2, model3, model4, model5)
+```
+
+
+## Model 6K
+
+```{r}
+model6k <- glm(progresja_vol50 ~ wiek  + obj_1 +  onkocytarna + AITD, data = dplyr::filter(bethIV_2_lata, sex=="K"), family = binomial)
+summary(model6k)
+exp(coef(model6k))
+exp(confint(model6k))
+BIC(model6k)
+```
+
+
+## Model 6M
+
+```{r}
+model6m <- glm(progresja_vol50 ~ wiek  + obj_1 +  onkocytarna + AITD, data = dplyr::filter(bethIV_2_lata, sex=="M"), family = binomial)
+summary(model6m)
+exp(coef(model6m))
+exp(confint(model6m))
+BIC(model6m)
+```
