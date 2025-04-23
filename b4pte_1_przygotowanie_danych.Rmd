@@ -79,7 +79,7 @@ summary(bethIV_2_lata)
 
 ```
 
-
+  
 
 ## Uszereguj wartosci w kolumnach od najwieszej do najmniejszej:
 ### A-C wymiary od największego do najmniejszgo na początku obserwacji:
@@ -111,7 +111,8 @@ bethIV_2_lata <- bethIV_2_lata %>%
     obj_1 = 0.001 * wymA * wymB * wymC * pi / 6,
     obj_2 = 0.001 * wymD * wymE * wymF * pi / 6,
     obj_delta_ml = obj_2 - obj_1,
-    obj_delta_pct = 100 * (obj_2 - obj_1) / obj_1
+    obj_delta_pct = 100 * (obj_2 - obj_1) / obj_1,
+    obj_log_fold_change = log(obj_2 / obj_1)
   )
 ```
 
