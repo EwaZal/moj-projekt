@@ -128,6 +128,16 @@ bethIV_2_lata <- bethIV_2_lata %>%
   )
 ```
 
+# Zmienna określająca czy progresja mała czy duża
+
+wśród 89 osób z progresją mediana obj_log_fold_change wyniosła 0.8255786, co odpowiada `r exp(0.8255786)`-krotnemu wzrostowi objętości czyli wzrostowi obj. o 129% względem wyjściowej (szczegóły w notebooku b4pte_2_statystyki_opisowe.Rmd)
+
+```{r}
+bethIV_2_lata <- bethIV_2_lata %>%
+  mutate(
+    progresja_vol129 = ifelse(obj_delta_pct > 129, 1L, 0L)
+  )
+```
 
 # Definicja zmian zlosliwych:
 ## 0 - lagodne ('Zmiana łagodna', 'Zmiany hiperplastyczne', 'Gruczolak pęcherzykowy', 'Gruczolak onkocytarny', 'AITD') + o niepewnym potencjale złośliwości ('NIFTP', 'FTUMP', 'Guz pęcherzykowy')

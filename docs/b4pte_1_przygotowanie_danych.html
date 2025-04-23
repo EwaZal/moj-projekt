@@ -441,7 +441,7 @@ display: none;
 danych</h1>
 <h4 class="author">Piotr Wiśniewski, Gosia Struk-Panfil, Ewa
 Zalewska</h4>
-<h4 class="date">23 Apr 2025, godz. 08:20</h4>
+<h4 class="date">23 Apr 2025, godz. 09:19</h4>
 
 </div>
 
@@ -566,6 +566,17 @@ bethIV_2_lata &lt;- mutate(bethIV_2_lata, wymF = pmin(bethIV_2_lata$wym4, bethIV
     
     # defincja w oparciu o przyrost obj. guzka &gt; 50%
     progresja_vol50 = ifelse(obj_delta_pct &gt; 50, 1L, 0L)
+  )</code></pre>
+</div>
+<div id="zmienna-określająca-czy-progresja-mała-czy-duża" class="section level1">
+<h1>Zmienna określająca czy progresja mała czy duża</h1>
+<p>wśród 89 osób z progresją mediana obj_log_fold_change wyniosła
+0.8255786, co odpowiada 2.2832014-krotnemu wzrostowi objętości czyli
+wzrostowi obj. o 129% względem wyjściowej (szczegóły w notebooku
+b4pte_2_statystyki_opisowe.Rmd)</p>
+<pre class="r"><code>bethIV_2_lata &lt;- bethIV_2_lata %&gt;%
+  mutate(
+    progresja_vol129 = ifelse(obj_delta_pct &gt; 129, 1L, 0L)
   )</code></pre>
 </div>
 <div id="definicja-zmian-zlosliwych" class="section level1">
