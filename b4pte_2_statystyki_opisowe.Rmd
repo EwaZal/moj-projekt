@@ -142,6 +142,13 @@ median(unlist(bethIV_2_lata[, c("wymA", "wymB", "wymC")]), na.rm = TRUE)
 median(unlist(bethIV_2_lata[, c("wymD", "wymE", "wymF")]), na.rm = TRUE)
 
 ```
+
+## Koniec obserwacji -- daty min. i max.
+
+```{r}
+summary(bethIV_2_lata$data_koncowa)
+```
+
 ## Ile osób miało AITD?
 ``` {r}
 bethIV_2_lata %>%
