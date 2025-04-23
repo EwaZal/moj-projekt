@@ -471,13 +471,20 @@ wartości logarytmów przykladowych wartości:
 
 ```{r}
 tibble(
-  x = c(2,3,4,5,10),
+  x = c(1.5, 2,3,4,5,10),
   log_x = log(x)
 )
 ```
 
+nasze kryterium wzrostu o 50% odpowiada wartości  obj_log_fold_change = log(1.5) = `r log(1.5)`
+
 
 ```{r}
-ggplot(bethIV_2_lata, aes(obj_log_fold_change)) + geom_histogram()
+ggplot(bethIV_2_lata, aes(obj_log_fold_change)) + 
+  geom_histogram() +
+  geom_vline(xintercept = log(1.5), linetype = "dashed", colour = "black", linewidth = 0.8) + 
+  labs(
+    caption = "pionowa linia oznacza wzrost o 50% , tj. obj_log_fold_change = log(1.5)"
+  ) 
 ```
 
