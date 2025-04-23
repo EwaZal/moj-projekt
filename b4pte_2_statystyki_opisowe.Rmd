@@ -63,6 +63,14 @@ shapiro.test(bethIV_2_lata$wymF)
 qqnorm(bethIV_2_lata$wymF)
 ```
 
+## Badanie ilosci osob z wynikiem jednoznacznym i niejednoznacznym:
+
+``` {r}
+
+bethIV_2_lata %>%
+  count(jednoznaczny_BAC)
+``` 
+
 ## Badanie ilosci kobiet i mężczyzn w grupie:
 
 ``` {r}
@@ -446,10 +454,17 @@ ggplot(beth_clean, aes(x = progresja_grupa, y = wiek, fill = progresja_grupa)) +
 
 ``` {r}
 
+<<<<<<< HEAD
 bethIV_2_lata %>%
   count(zlosliwa)
 
 bethIV_2_lata %>%
+=======
+bethIV_2_lata_operowani <- bethIV_2_lata %>%
+  filter(operowany == 1)
+
+  bethIV_2_lata_operowani %>%
+>>>>>>> e131027fa65597272c92eca7d06d3e4c7909917a
   group_by(progresja_vol50) %>%
   count(zlosliwa)
 
@@ -462,10 +477,65 @@ bethIV_2_lata %>%
 ``` {r}
 
 
-mosaicplot(~ progresja_vol50 + zlosliwa, data = bethIV_2_lata, color = TRUE)
 
-pairwise_fisher_test(table(bethIV_2_lata$progresja_vol50, bethIV_2_lata$zlosliwa), p.adjust.method = "fdr")
+mosaicplot(~ progresja_vol50 + zlosliwa, data = bethIV_2_lata_operowani, color = TRUE)
 
+pairwise_fisher_test(table(bethIV_2_lata_operowani$progresja_vol50, bethIV_2_lata_operowani$zlosliwa), p.adjust.method = "fdr")
+
+```
+
+
+## obj_log_fold_change   -- ocena dynamiki wzrostu guzków
+
+zmienna określa ilukrotnie guzek powiększył swoją objętość w trakcie obserwacji. Punktem wyjścia jest $fold{\_}change=obj_2/obj_1$, ale wyrażone jest to na skali logarytmicznej, czyli ostatecznie $log{\_}fold{\_}change = log(obj_2/obj_1)$
+
+wartość obj_log_fold_change = log(2) = `r log(2)` odpowiada 2x powiększeniu się
+
+wartości logarytmów przykladowych wartości: 
+
+```{r}
+tibble(
+  x = c(1.5, 2,3,4,5,10),
+  log_x = log(x)
+)
+```
+
+nasze kryterium wzrostu o 50% odpowiada wartości  obj_log_fold_change = log(1.5) = `r log(1.5)`
+
+
+```{r}
+ggplot(bethIV_2_lata, aes(obj_log_fold_change)) + 
+  geom_histogram() +
+  geom_vline(xintercept = log(1.5), linetype = "dashed", colour = "black", linewidth = 0.8) + 
+  labs(
+    caption = "pionowa linia oznacza wzrost o 50% , tj. obj_log_fold_change = log(1.5)"
+  ) 
+```
+
+## obj_log_fold_change   -- ocena dynamiki wzrostu guzków wśród pacjentów z progresją
+
+Wartości w skali log
+
+```{r}
+bethIV_2_lata %>% 
+  filter(progresja_vol50 == 1) %>%
+  pull(obj_log_fold_change) %>%
+  quantile() 
+```
+
+Wartości w natywnej skali
+
+```{r}
+bethIV_2_lata %>% 
+  filter(progresja_vol50 == 1) %>%
+  pull(obj_log_fold_change) %>%
+  quantile() %>%
+  exp()
+```
+
+<<<<<<< HEAD
 fisher.test(table(bethIV_2_lata$progresja_vol50, bethIV_2_lata$zlosliwa))
 
 ```
+=======
+>>>>>>> e131027fa65597272c92eca7d06d3e4c7909917a
