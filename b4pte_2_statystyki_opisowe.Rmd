@@ -513,3 +513,37 @@ Wartości w natywnej skali
   exp(quantile(bethIV_2_lata_progresja$obj_log_fold_change))
 ```
 
+
+Wartości w  skali procentowej
+
+```{r}
+  100*(exp(quantile(bethIV_2_lata_progresja$obj_log_fold_change))-1)
+```
+
+## progresja_vol129  -- podział pacj. z progresją na tych z względnie mniejszą i większą
+
+```{r}
+bethIV_2_lata_progresja %>%
+  count(progresja_vol129)
+```
+
+
+
+## Badanie ilosci osób ze zmianą złośliwą w grupie osób z progresja_vol129 i bez:
+
+``` {r}
+  bethIV_2_lata_operowani %>%
+  group_by(progresja_vol129) %>%
+  count(zlosliwa)
+```
+
+## Badanie istotności różnicy w proporcji zmian złośiwych i łagodnych w grupie osób z progresją_vol129 i bez:
+``` {r}
+
+
+
+mosaicplot(~ progresja_vol129 + zlosliwa, data = bethIV_2_lata_operowani, color = TRUE)
+
+pairwise_fisher_test(table(bethIV_2_lata_operowani$progresja_vol129, bethIV_2_lata_operowani$zlosliwa), p.adjust.method = "fdr")
+
+```
