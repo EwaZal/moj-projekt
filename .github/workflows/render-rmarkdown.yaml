@@ -59,7 +59,15 @@ jobs:
           for f in docs/*.html; do
             fname=$(basename "$f")
             if [ "$fname" != "index.html" ]; then
-              echo "<li><a href=\"$fname\">$fname</a></li>" >> docs/index.html
+              # Get corresponding Rmd filename
+              rmd_file="${fname%.html}.Rmd"
+              # Get last commit date for the Rmd file (if it still exists)
+              if git ls-files --error-unmatch "$rmd_file" > /dev/null 2>&1; then
+                last_updated=$(git log -1 --format="%cd" --date=short -- "$rmd_file")
+              else
+                last_updated="(source deleted)"
+              fi
+              echo "<li><a href=\"$fname\">$fname</a> — last updated: $last_updated</li>" >> docs/index.html
             fi
           done
           echo "</ul></body></html>" >> docs/index.html
