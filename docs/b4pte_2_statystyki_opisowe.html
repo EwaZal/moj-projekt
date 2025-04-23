@@ -440,7 +440,7 @@ display: none;
 <h1 class="title toc-ignore">Bethesda IV - Statystyki Opisowe</h1>
 <h4 class="author">Piotr Wiśniewski, Gosia Struk-Panfil, Ewa
 Zalewska</h4>
-<h4 class="date">23 Apr 2025, godz. 09:26</h4>
+<h4 class="date">23 Apr 2025, godz. 09:28</h4>
 
 </div>
 
@@ -630,6 +630,12 @@ początku i końcu obserwacji)?</h2>
 <h2>Jaka była mediana wielkości guzków na końcu obserwacji?</h2>
 <pre class="r"><code>median(unlist(bethIV_2_lata[, c(&quot;wymD&quot;, &quot;wymE&quot;, &quot;wymF&quot;)]), na.rm = TRUE)</code></pre>
 <pre><code>## [1] 12</code></pre>
+</div>
+<div id="koniec-obserwacji-daty-min.-i-max." class="section level2">
+<h2>Koniec obserwacji – daty min. i max.</h2>
+<pre class="r"><code>summary(bethIV_2_lata$data_koncowa)</code></pre>
+<pre><code>##         Min.      1st Qu.       Median         Mean      3rd Qu.         Max. 
+## &quot;2010-07-15&quot; &quot;2023-01-28&quot; &quot;2023-11-25&quot; &quot;2023-05-21&quot; &quot;2024-02-24&quot; &quot;2025-05-09&quot;</code></pre>
 </div>
 <div id="ile-osób-miało-aitd" class="section level2">
 <h2>Ile osób miało AITD?</h2>
