@@ -28,6 +28,13 @@ if (file.exists(plik_dane_do_analizy)) {
   stop(sprintf("Nie znaleziono pliku: `%s`. Uruchom notatnik przygotowujący zbiór danych!", plik_dane_do_analizy))
 }
 
+# podzbiory
+bethIV_2_lata_operowani <- bethIV_2_lata %>%
+  filter(operowany == 1)
+
+bethIV_2_lata_progresja <- bethIV_2_lata %>%
+  filter(progresja_vol50 == 1)
+
 # Set global theme
 theme_set(theme_classic2(base_size = 13))
 
@@ -448,10 +455,6 @@ ggplot(beth_clean, aes(x = progresja_grupa, y = wiek, fill = progresja_grupa)) +
 ## Badanie ilosci osób ze zmianą złośliwą w grupie osób z progresją_vol50 i bez:
 
 ``` {r}
-
-bethIV_2_lata_operowani <- bethIV_2_lata %>%
-  filter(operowany == 1)
-
   bethIV_2_lata_operowani %>%
   group_by(progresja_vol50) %>%
   count(zlosliwa)
