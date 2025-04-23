@@ -446,10 +446,17 @@ ggplot(beth_clean, aes(x = progresja_grupa, y = wiek, fill = progresja_grupa)) +
 
 ``` {r}
 
+<<<<<<< HEAD
 bethIV_2_lata %>%
   count(zlosliwa)
 
 bethIV_2_lata %>%
+=======
+bethIV_2_lata_operowani <- bethIV_2_lata %>%
+  filter(operowany == 1)
+
+  bethIV_2_lata_operowani %>%
+>>>>>>> 1d3709158e9929253e91b794cf121b287132d76e
   group_by(progresja_vol50) %>%
   count(zlosliwa)
 
@@ -462,10 +469,44 @@ bethIV_2_lata %>%
 ``` {r}
 
 
-mosaicplot(~ progresja_vol50 + zlosliwa, data = bethIV_2_lata, color = TRUE)
 
-pairwise_fisher_test(table(bethIV_2_lata$progresja_vol50, bethIV_2_lata$zlosliwa), p.adjust.method = "fdr")
+mosaicplot(~ progresja_vol50 + zlosliwa, data = bethIV_2_lata_operowani, color = TRUE)
 
+pairwise_fisher_test(table(bethIV_2_lata_operowani$progresja_vol50, bethIV_2_lata_operowani$zlosliwa), p.adjust.method = "fdr")
+
+```
+
+
+## obj_log_fold_change   -- ocena dynamiki wzrostu guzków
+
+zmienna określa ilukrotnie guzek powiększył swoją objętość w trakcie obserwacji. Punktem wyjścia jest $fold{\_}change=obj_2/obj_1$, ale wyrażone jest to na skali logarytmicznej, czyli ostatecznie $log{\_}fold{\_}change = log(obj_2/obj_1)$
+
+wartość obj_log_fold_change = log(2) = `r log(2)` odpowiada 2x powiększeniu się
+
+wartości logarytmów przykladowych wartości: 
+
+```{r}
+tibble(
+  x = c(1.5, 2,3,4,5,10),
+  log_x = log(x)
+)
+```
+
+nasze kryterium wzrostu o 50% odpowiada wartości  obj_log_fold_change = log(1.5) = `r log(1.5)`
+
+
+```{r}
+ggplot(bethIV_2_lata, aes(obj_log_fold_change)) + 
+  geom_histogram() +
+  geom_vline(xintercept = log(1.5), linetype = "dashed", colour = "black", linewidth = 0.8) + 
+  labs(
+    caption = "pionowa linia oznacza wzrost o 50% , tj. obj_log_fold_change = log(1.5)"
+  ) 
+```
+
+<<<<<<< HEAD
 fisher.test(table(bethIV_2_lata$progresja_vol50, bethIV_2_lata$zlosliwa))
 
 ```
+=======
+>>>>>>> 1d3709158e9929253e91b794cf121b287132d76e
