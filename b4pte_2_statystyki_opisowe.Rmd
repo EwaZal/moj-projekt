@@ -488,3 +488,24 @@ ggplot(bethIV_2_lata, aes(obj_log_fold_change)) +
   ) 
 ```
 
+## obj_log_fold_change   -- ocena dynamiki wzrostu guzków wśród pacjentów z progresją
+
+Wartości w skali log
+
+```{r}
+bethIV_2_lata %>% 
+  filter(progresja_vol50 == 1) %>%
+  pull(obj_log_fold_change) %>%
+  quantile() 
+```
+
+Wartości w natywnej skali
+
+```{r}
+bethIV_2_lata %>% 
+  filter(progresja_vol50 == 1) %>%
+  pull(obj_log_fold_change) %>%
+  quantile() %>%
+  exp()
+```
+
